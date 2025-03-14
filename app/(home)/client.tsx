@@ -1,11 +1,8 @@
-'use client'
-import { trpc } from "@/trpc/client";
+'use client';
+import { trpc } from '@/trpc/client';
 
 export default function HomePageClient() {
-	const [data] = trpc.hello.useSuspenseQuery({text:'prefetch'})
+    const [data] = trpc.hello.useSuspenseQuery({ text: 'prefetch' });
 
-	return <div>
-		client says {data.greeting}
-	</div>
-
+    return <div>client says {data.greeting}</div>;
 }

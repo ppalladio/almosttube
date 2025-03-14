@@ -10,8 +10,8 @@ export default function Home() {
         <HydrateClient>
             <Suspense fallback={<div>loading</div>}>
                 <ErrorBoundary fallback={<div>error</div>}>
-                <HomePageClient />
-				</ErrorBoundary>
+                    <HomePageClient />
+                </ErrorBoundary>
             </Suspense>
         </HydrateClient>
     );
