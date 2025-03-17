@@ -1,6 +1,6 @@
 import { SidebarProvider } from '@/components/ui/sidebar';
 import HomeNavbar from '../components/home-navbar';
-import HomeSidebar from '@/app/modules/auth/ui/components/home-sidebar';
+import HomeSidebar from '@/modules/home/ui/components/home-sidebar';
 
 interface HomeLayoutProps {
     children: React.ReactNode;
@@ -13,7 +13,7 @@ export const HomeLayout = ({ children }: HomeLayoutProps) => {
                 home navbar
                 <div className="flex min-h-screen pt-[4rem]">
                     <HomeSidebar />
-                    <main className='flex-1 overflow-y-hidden'>{children}</main>
+                    <main className="flex-1 overflow-y-hidden">{children}</main>
                 </div>
             </div>
         </SidebarProvider>

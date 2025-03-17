@@ -24,7 +24,7 @@ const items = [
     },
 ];
 export const MainSection = () => {
-    const {userId,isSignedIn} =useAuth()
+    const { isSignedIn} =useAuth()
 	const clerk = useClerk()
 	return (
         <SidebarGroup>
