@@ -1,9 +1,12 @@
-
 import VideoSection from '../ui/sections/VideoSection';
 
 const StudioView = () => {
     return (
-        <div>
+        <div className="flex flex-col gap-y-6 py-2.5">
+            <div className="px-4">
+                <h1 className="text-2xl font-bold ">Channel Content</h1>
+                <p className="text-sm text-muted-foreground">Manage your channel content</p>
+            </div>
             <VideoSection />
         </div>
     );
