@@ -64,5 +64,5 @@ export const POST = async (req: Request) => {
                 .where(eq(videos.muxUploadId, data.upload_id));
             break;
     }
-    return new Response('video updated'+data, { status: 200 });
+    return new Response('video updated', { status: 200 });
 };

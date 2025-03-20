@@ -4,7 +4,7 @@
     "private": true,
     "scripts": {
         "dev:all": "concurrently \"bun run dev:webhook\" \"bun run dev\" ",
-        "dev:webhook": "ngrok http --url=lamb-selected-sunfish.ngrok-free.app 3000",
+        "dev:webhook": "ssh -p 443 -R0:127.0.0.1:3000 -L4300:127.0.0.1:4300 -o StrictHostKeyChecking=no -o ServerAliveInterval=30 N0QxPulrrHC@eu.free.pinggy.io",
         "dev": "next dev",
         "build": "next build",
         "start": "next start",
