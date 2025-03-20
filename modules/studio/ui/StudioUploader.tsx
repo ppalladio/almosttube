@@ -8,7 +8,7 @@ interface StudioUploaderProps {
 const StudioUploader = ({ endpoint, onSuccess }: StudioUploaderProps) => {
     return (
         <div>
-            <MuxUploader endpoint={endpoint} id="video-uploader" className="hidden group/uploder" />
+            <MuxUploader endpoint={endpoint} id="video-uploader" className="hidden group/uploader" onSuccess={onSuccess} />
             <MuxUploaderDrop muxUploader="video-uploader" className="group/drop">
                 <div slot="heading" className="flex flex-col items-center gap-6">
                     <div className="flex   items-center justify-center   rounded-full gap-6 bg-muted h-32 w-32">

@@ -10,6 +10,16 @@ export const VideoRouter = createTRPCRouter({
             new_asset_settings: {
                 passthrough: userId,
                 playback_policy: ['public'],
+                input: [
+                    {
+                        generated_subtitles: [
+                            {
+                                language_code: 'en',
+                                name: 'English',
+                            },
+                        ],
+                    },
+                ],
                 // ! will not work without credit card info
                 // mp4_support: 'standard',
             },
