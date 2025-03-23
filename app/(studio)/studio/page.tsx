@@ -1,4 +1,4 @@
-import StudioView from '@/modules/studio/view/StudioView';
+import StudioView from '@/modules/studio/ui/views/StudioView';
 import { HydrateClient, trpc } from '@/trpc/server';
 
 const page = () => {
