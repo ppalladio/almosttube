@@ -73,9 +73,19 @@ const FormSectionSuspense = ({ videoId }: FormSectionProps) => {
         await update.mutateAsync(data);
     };
     //  TODO change for deployment outside of vercel
-    const videoUrl = `${process.env.VERCEL_URL || 'http://localhost:3000'}/videos/${videoId}`;
+    const videoUrl = `${process.env.VERCEL_URL ?? 'http://localhost:3000'}/studio/videos/${videoId}`;
     const [isCopied, setIsCopied] = useState(false);
 
+    const onClickSave = () => {
+        try {
+            router.push(`/studio`);
+        } catch (error) {
+            console.error(error);
+            toast.error('something went wrong, please try again later');
+        } finally {
+            router.push(`/studio`);
+        }
+    };
     const onCopy = async () => {
         await navigator.clipboard.writeText(videoUrl);
         setIsCopied(true);
@@ -84,16 +94,23 @@ const FormSectionSuspense = ({ videoId }: FormSectionProps) => {
             setIsCopied(false);
         }, 2000);
     };
+    console.log(video.muxStatus);
     return (
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
                 <div className="flex items-center justify-between mb-6">
                     <div>
-                        <h1 className="text-2xl font-bold">video details</h1>
-                        <p className="text-xs text-muted-foreground">manage your video details</p>
+                        <h1 className="text-2xl font-bold">ideo details</h1>
+                        <p className="text-xs text-muted-foreground my-2">Manage your video details</p>
                         <div className="flex items-center gap-x-2">
-                            <Button type="submit" disabled={update.isPending}>
-                                save
+                            <Button
+                                type="submit"
+                                disabled={update.isPending}
+                                onClick={() => {
+                                    onClickSave();
+                                }}
+                            >
+                                Save
                             </Button>
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
@@ -101,7 +118,7 @@ const FormSectionSuspense = ({ videoId }: FormSectionProps) => {
                                         <MoreVerticalIcon />
                                     </Button>
                                 </DropdownMenuTrigger>
-                                <DropdownMenuContent align="end" side="left">
+                                <DropdownMenuContent align="end" side="bottom"  >
                                     <DropdownMenuItem onClick={() => remove.mutate({ id: videoId })}>
                                         <TrashIcon className="size-4 mr-2" /> Delete
                                     </DropdownMenuItem>
@@ -157,13 +174,12 @@ const FormSectionSuspense = ({ videoId }: FormSectionProps) => {
                                                 <SelectValue placeholder="select a category" />
                                             </SelectTrigger>
                                         </FormControl>
-                                        {categories.map((category) => (
-                                            <SelectItem key={category.id} value={category.id}>
-                                                {category.name}
-                                            </SelectItem>
-                                        ))}
                                         <SelectContent>
-                                            <SelectItem value="something">something</SelectItem>
+                                            {categories.map((category) => (
+                                                <SelectItem key={category.id} value={category.id}>
+                                                    {category.name}
+                                                </SelectItem>
+                                            ))}
                                         </SelectContent>
                                     </Select>
                                     <FormMessage />

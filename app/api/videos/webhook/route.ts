@@ -29,14 +29,12 @@ export const POST = async (req: Request) => {
 
     const headersPayload = await headers();
     const muxSignature = headersPayload.get('mux-signature');
-    console.log('Signature:', muxSignature);
 
     if (!muxSignature) {
         return new Response('no signature found', { status: 401 });
     }
 
     const payload = await req.json();
-    console.log('Raw payload:', payload);
 
     const body = JSON.stringify(payload);
     mux.webhooks.verifySignature(
