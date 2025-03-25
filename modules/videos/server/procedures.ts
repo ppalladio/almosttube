@@ -6,6 +6,29 @@ import { TRPCError } from '@trpc/server';
 import { and, eq } from 'drizzle-orm';
 import { z } from 'zod';
 export const VideoRouter = createTRPCRouter({
+    restoreThumbnail: protectedProcedure.input(z.object({ id: z.string().uuid() })).mutation(async ({ ctx, input }) => {
+        const { id: userId } = ctx.user;
+        const [existingVideo] = await db
+            .select()
+            .from(videos)
+            .where(and(eq(videos.id, input.id), eq(videos.userId, userId)));
+
+        if (!existingVideo) {
+            return new TRPCError({ code: 'NOT_FOUND' });
+        }
+        if (!existingVideo.muxPlaybackId) {
+            throw new TRPCError({ code: 'BAD_REQUEST' });
+        }
+        const muxThumbnailUrl = `https://image.mux.com/${existingVideo.muxPlaybackId}/thumbnail.png`;
+
+        const [updatedVideo] = await db
+            .update(videos)
+            .set({ muxThumbnailUrl })
+            .where(and(eq(videos.id, input.id), eq(videos.userId, userId)))
+            .returning();
+        return updatedVideo;
+    }),
+
     remove: protectedProcedure.input(z.object({ id: z.string().uuid() })).mutation(async ({ ctx, input }) => {
         const { id: userId } = ctx.user;
         const [removedVideo] = await db
@@ -40,7 +63,7 @@ export const VideoRouter = createTRPCRouter({
         if (!updatedVideo) {
             throw new TRPCError({ code: 'NOT_FOUND' });
         }
-		return updatedVideo
+        return updatedVideo;
     }),
     create: protectedProcedure.mutation(async ({ ctx }) => {
         const { id: userId } = ctx.user;
