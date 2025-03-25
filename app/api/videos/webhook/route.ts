@@ -10,6 +10,7 @@ import {
 } from '@mux/mux-node/resources/webhooks.mjs';
 import { eq } from 'drizzle-orm';
 import { headers } from 'next/headers';
+import { UTApi } from 'uploadthing/server';
 
 const SIGNING_SECRET = process.env.MUX_WEBHOOK_SECRET!;
 
@@ -73,10 +74,21 @@ export const POST = async (req: Request) => {
                 return new Response('No playback ID found', { status: 400 });
             }
 
-            const muxThumbnailUrl = `https://image.mux.com/${playbackId}/thumbnail.png`;
-            const muxPreviewUrl = `https://player.mux.com/${playbackId}/animated.gif`;
+            const tempMuxThumbnailUrl = `https://image.mux.com/${playbackId}/thumbnail.png`;
+            const tempMuxPreviewUrl = `https://player.mux.com/${playbackId}/animated.gif`;
             const duration = data.duration ? Math.round(data.duration * 1000) : 0;
 
+            const utapi = new UTApi();
+
+            const [uploadedThumbnail, uploadedPreview] = await utapi.uploadFilesFromUrl([tempMuxThumbnailUrl, tempMuxPreviewUrl]);
+
+            if (!uploadedThumbnail.data || !uploadedPreview.data) {
+                return new Response('Fail to generate thumbnail', { status: 500 });
+            }
+
+            const { key: muxThumbnailKey, ufsUrl: muxThumbnailUrl } = uploadedThumbnail.data;
+
+            const { key: muxPreviewKey, ufsUrl: muxPreviewUrl } = uploadedThumbnail.data;
             await db
                 .update(videos)
                 .set({
@@ -84,7 +96,9 @@ export const POST = async (req: Request) => {
                     muxPlaybackId: playbackId,
                     muxAssetId: data.id,
                     muxThumbnailUrl,
+                    muxThumbnailKey,
                     muxPreviewUrl,
+                    muxPreviewKey,
                     duration,
                 })
                 .where(eq(videos.muxUploadId, data.upload_id));
