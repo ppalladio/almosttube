@@ -9,7 +9,7 @@ const VideoPlayer = ({ playbackId, thumbnailId, autoPlay, onPlay }: VideoPlayerP
     if (!playbackId) return null;
     return (
         <MuxPlayer
-            playbackId={playbackId??""}
+            playbackId={playbackId ?? ''}
             // TODO change to real placeholder pics
             poster={thumbnailId ?? '/next.svg'}
             autoPlay={autoPlay}

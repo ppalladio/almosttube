@@ -67,19 +67,6 @@ const FormSectionSuspense = ({ videoId }: FormSectionProps) => {
             toast.error('Something went wrong');
         },
     });
-
-    const restoreThumbnail = trpc.videos.restoreThumbnail.useMutation({
-        onSuccess: () => {
-            utils.studio.getMany.invalidate();
-            utils.studio.getOne.invalidate({ id: videoId });
-            toast.success('Thumbnail restored');
-            router.push('/studio');
-        },
-        onError: (error) => {
-            console.error(error);
-            toast.error('Something went wrong');
-        },
-    });
     const form = useForm<z.infer<typeof videoUpdateSchema>>({
         resolver: zodResolver(videoUpdateSchema),
         defaultValues: video,
@@ -110,10 +97,10 @@ const FormSectionSuspense = ({ videoId }: FormSectionProps) => {
             setIsCopied(false);
         }, 2000);
     };
-    console.log(video.muxStatus);
     return (
         <>
-            <ThumbnailUploadModal open={thumbnailModalOpen} onOpenChange={setThumbnailModalOpen} videoId={videoId} />
+		{/* TODO THUMBNAIL IS NOT WORKING */}
+            {/* <ThumbnailUploadModal open={thumbnailModalOpen} onOpenChange={setThumbnailModalOpen} videoId={videoId} /> */}
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)}>
                     <div className="flex items-center justify-between   mb-6">
@@ -189,7 +176,7 @@ const FormSectionSuspense = ({ videoId }: FormSectionProps) => {
                                         <FormControl>
                                             <div className="p-0.5 border border-dashed border-neutral-400 relative group  h-[84px]  w-[153px] ">
                                                 {/* TODO change the placeholder img */}
-                                                <Image src={video.muxThumbnailUrl ?? ''} fill alt="thumbnail" className="object-cover" />
+                                                <Image src={video.muxThumbnailUrl!} fill alt="thumbnail" className="object-cover" />
                                                 <DropdownMenu>
                                                     <DropdownMenuTrigger asChild>
                                                         <Button
@@ -210,8 +197,8 @@ const FormSectionSuspense = ({ videoId }: FormSectionProps) => {
                                                             AI-Generated
                                                         </DropdownMenuItem>
 
-                                                        <DropdownMenuItem onClick={() => restoreThumbnail.mutate({ id: videoId })}>
-                                                            <RotateCcwIcon className="size-4 mr-1" />
+                                                        <DropdownMenuItem>
+                                                            <RotateCcwIcon className="size-4 mr-1" onClick={() => {}} />
                                                             Restore
                                                         </DropdownMenuItem>
                                                     </DropdownMenuContent>

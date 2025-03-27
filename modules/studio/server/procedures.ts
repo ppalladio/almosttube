@@ -39,7 +39,7 @@ export const StudioRouter = createTRPCRouter({
         .query(async ({ ctx, input }) => {
             const { cursor, limit } = input;
             const { id: userId } = ctx.user;
-            console.log(cursor, limit, userId);
+
             const data = await db
                 .select()
                 .from(videos)
