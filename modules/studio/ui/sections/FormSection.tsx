@@ -100,7 +100,7 @@ const FormSectionSuspense = ({ videoId }: FormSectionProps) => {
     return (
         <>
 		{/* TODO THUMBNAIL IS NOT WORKING */}
-            {/* <ThumbnailUploadModal open={thumbnailModalOpen} onOpenChange={setThumbnailModalOpen} videoId={videoId} /> */}
+            <ThumbnailUploadModal open={thumbnailModalOpen} onOpenChange={setThumbnailModalOpen} videoId={videoId} />
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)}>
                     <div className="flex items-center justify-between   mb-6">
