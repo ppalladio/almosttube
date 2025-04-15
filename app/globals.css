@@ -1,10 +1,10 @@
 @import 'tailwindcss';
 
-@import 'uploadthing/tw/v4';
-
 @custom-variant dark (&:is(.dark *));
 @plugin "tailwindcss-animate";
-@source "@/node_modules/@uploadthing/react/dist/";
+/* style for uploadthing */
+@import 'uploadthing/tw/v4';
+@source "../node_modules/@uploadthing/react/dist";
 
 @theme inline {
     --color-background: var(--background);

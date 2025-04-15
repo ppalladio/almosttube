@@ -16,8 +16,7 @@ const ThumbnailUploadModal = ({ videoId, open, onOpenChange }: ThumbnailUploadMo
     };
     return (
         <ResponsiveModal title="Upload a thumbnail" open={open} onOpenChange={onOpenChange}>
-         
-            <UploadDropzone endpoint="imageUploader" />
+            <UploadDropzone endpoint="thumbnailUploader" input={{ videoId }} onClientUploadComplete={onUploadComplete} />
         </ResponsiveModal>
     );
 };
