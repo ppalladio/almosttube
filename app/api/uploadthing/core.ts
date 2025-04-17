@@ -38,25 +38,25 @@ export const ourFileRouter = {
 
             if (!user) throw new UploadThingError('Unauthorized');
 
-            const [existingVideo] = await db
-                .select({ muxThumbnailKey: videos.muxThumbnailKey })
-                .from(videos)
-                // ! eq(users.clerkId, clerkUserId)
-                .where(and(eq(videos.id, input.videoId), eq(videos.userId, user.id)));
+            // const [existingVideo] = await db
+            //     .select({ muxThumbnailKey: videos.muxThumbnailKey })
+            //     .from(videos)
+            //     // ! eq(users.clerkId, clerkUserId)
+            //     .where(and(eq(videos.id, input.videoId), eq(videos.userId, user.id)));
 
-            if (!existingVideo) {
-                throw new UploadThingError('NOT_FOUND');
-            }
+            // if (!existingVideo) {
+            //     throw new UploadThingError('NOT_FOUND');
+            // }
 
-            if (!existingVideo.muxThumbnailKey) {
-                const utapi = new UTApi();
+            // if (!existingVideo.muxThumbnailKey) {
+            //     const utapi = new UTApi();
 
-                await utapi.deleteFiles(existingVideo.muxThumbnailKey as string);
-                await db
-                    .update(videos)
-                    .set({ muxThumbnailKey: null, muxThumbnailUrl: null })
-                    .where(and(eq(videos.id, input.videoId), eq(videos.userId, user.id)));
-            }
+            //     await utapi.deleteFiles(existingVideo.muxThumbnailKey as string);
+            //     await db
+            //         .update(videos)
+            //         .set({ muxThumbnailKey: null, muxThumbnailUrl: null })
+            //         .where(and(eq(videos.id, input.videoId), eq(videos.userId, user.id)));
+            // }
             // Whatever is returned here is accessible in onUploadComplete as `metadata`
             return { user, ...input };
         })
@@ -66,10 +66,9 @@ export const ourFileRouter = {
                 .set({
                     // file.url deprecated
                     muxThumbnailUrl: file.ufsUrl,
-                    muxThumbnailKey: file.key,
+                    // muxThumbnailKey: file.key,
                 })
                 .where(and(eq(videos.id, metadata.videoId), eq(videos.userId, metadata.user.id)));
-            // !!! Whatever is returned here is sent to the clientside `onClientUploadComplete` callback
             return { uploadedBy: metadata.user.id };
         }),
 } satisfies FileRouter;

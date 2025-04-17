@@ -21,29 +21,29 @@ export const VideoRouter = createTRPCRouter({
             return new TRPCError({ code: 'NOT_FOUND' });
         }
 
-        if (existingVideo.muxThumbnailKey) {
-            await utapi.deleteFiles(existingVideo.muxThumbnailKey);
-            await db
-                .update(videos)
-                .set({ muxThumbnailKey: null, muxThumbnailUrl: null })
-                .where(and(eq(videos.id, input.id), eq(videos.userId, userId)));
-        }
+        // if (existingVideo.muxThumbnailKey) {
+        //     await utapi.deleteFiles(existingVideo.muxThumbnailKey);
+        //     await db
+        //         .update(videos)
+        //         .set({ muxThumbnailKey: null, muxThumbnailUrl: null })
+        //         .where(and(eq(videos.id, input.id), eq(videos.userId, userId)));
+        // }
         if (!existingVideo.muxPlaybackId) {
             throw new TRPCError({ code: 'BAD_REQUEST' });
         }
-        const tempMuxThumbnailUrl = `https://image.mux.com/${existingVideo.muxPlaybackId}/thumbnail.png`;
+        const muxThumbnailUrl = `https://image.mux.com/${existingVideo.muxPlaybackId}/thumbnail.png`;
 
-        const uploadedThumbnail = await utapi.uploadFilesFromUrl(tempMuxThumbnailUrl);
+        // const uploadedThumbnail = await utapi.uploadFilesFromUrl(tempMuxThumbnailUrl);
 
-        if (!uploadedThumbnail.data) {
-            throw new TRPCError({ code: 'BAD_REQUEST' });
-        }
+        // if (!uploadedThumbnail.data) {
+        //     throw new TRPCError({ code: 'BAD_REQUEST' });
+        // }
 
-        const { key: muxThumbnailKey, ufsUrl: muxThumbnailUrl } = uploadedThumbnail.data;
+        // const { key: muxThumbnailKey, ufsUrl: muxThumbnailUrl } = uploadedThumbnail.data;
 
         const [updatedVideo] = await db
             .update(videos)
-            .set({ muxThumbnailUrl, muxThumbnailKey })
+            .set({ muxThumbnailUrl })
             .where(and(eq(videos.id, input.id), eq(videos.userId, userId)))
             .returning();
         return updatedVideo;

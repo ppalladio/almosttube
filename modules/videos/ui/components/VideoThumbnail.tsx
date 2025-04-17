@@ -1,20 +1,21 @@
+import { thumbnailPlaceholder } from '@/lib/constants';
 import { formattedDuration } from '@/lib/utils';
 import Image from 'next/image';
 
 interface VideoThumbnailProps {
     title: string;
     duration: number;
-    imgUrl?: string | '';
-    previewUrl?: string | '';
+    imgUrl?: string;
+    previewUrl?: string;
 }
 const VideoThumbnail = ({ imgUrl, previewUrl, title, duration }: VideoThumbnailProps) => {
     return (
         <div className="relative">
             <div className="relative w-full overflow-hidden rounded-xl aspect-video">
-                <Image src={imgUrl ?? '/vercel.svg'} alt={title} fill className="h-full w-full object-cover" />
+                <Image src={imgUrl || thumbnailPlaceholder} alt={title} fill className="h-full w-full object-cover" />
                 <Image
                     unoptimized={!!previewUrl}
-                    src={previewUrl ?? '/vercel.svg'}
+                    src={previewUrl || thumbnailPlaceholder}
                     alt={title}
                     fill
                     className="h-full w-full object-cover opacity-0 group-hover:opacity-100"

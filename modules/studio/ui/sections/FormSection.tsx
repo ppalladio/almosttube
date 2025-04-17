@@ -21,6 +21,7 @@ import { snakeCaseToTitle } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import ThumbnailUploadModal from '../components/ThumbnailUploadModal';
+import { thumbnailPlaceholder } from '@/lib/constants';
 interface FormSectionProps {
     videoId: string;
 }
@@ -185,8 +186,12 @@ const FormSectionSuspense = ({ videoId }: FormSectionProps) => {
                                         <FormLabel>Thumbnail</FormLabel>
                                         <FormControl>
                                             <div className="p-0.5 border border-dashed border-neutral-400 relative group  h-[84px]  w-[153px] ">
-                                                {/* TODO change the placeholder img */}
-                                                <Image src={video.muxThumbnailUrl!} fill alt="thumbnail" className="object-cover" />
+                                                <Image
+                                                    src={video.muxThumbnailUrl || thumbnailPlaceholder}
+                                                    fill
+                                                    alt="thumbnail"
+                                                    className="object-cover"
+                                                />
                                                 <DropdownMenu>
                                                     <DropdownMenuTrigger asChild>
                                                         <Button
