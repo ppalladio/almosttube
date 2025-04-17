@@ -276,8 +276,8 @@ const FormSectionSuspense = ({ videoId }: FormSectionProps) => {
                                     </div>
                                     <div className="flex jestify-between items-center">
                                         <div className="flex flex-col gap-y-1">
-                                            <p className="text-muted-foreground text-xs">Video Status</p>
-                                            <p className="text-sm">{snakeCaseToTitle(video.muxStatus ?? 'Preparing')}</p>
+                                            <p className="text-muted-foreground text-xs ">Video Status</p>
+                                            <p className="text-sm font-bold">{snakeCaseToTitle(video.muxStatus ?? 'Preparing')}</p>
                                         </div>
                                     </div>
                                 </div>

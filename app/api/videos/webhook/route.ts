@@ -74,32 +74,36 @@ export const POST = async (req: Request) => {
                 return new Response('No playback ID found', { status: 400 });
             }
 
-            const muxThumbnailUrl = `https://image.mux.com/${playbackId}/thumbnail.png`;
-            const muxPreviewUrl = `https://player.mux.com/${playbackId}/animated.gif`;
+            const tempMuxThumbnailUrl = `https://image.mux.com/${playbackId}/thumbnail.png`;
+            const tempMuxPreviewUrl = `https://image.mux.com/${playbackId}/animated.gif`;
             const duration = data.duration ? Math.round(data.duration * 1000) : 0;
 
-            // const utapi = new UTApi();
+            const utapi = new UTApi();
+            let previewRes, thumbnailRes;
 
-            // const [uploadedThumbnailUrl, uploadedPreviewUrl] = await utapi.uploadFilesFromUrl([tempMuxPreviewUrl, tempMuxThumbnailUrl]);
+            try {
+                // Upload gif first, then thumbnail — keep order in sync!
+                [previewRes, thumbnailRes] = await utapi.uploadFilesFromUrl([tempMuxPreviewUrl, tempMuxThumbnailUrl]);
 
-            // if (!uploadedThumbnailUrl || !uploadedPreviewUrl) {
-            //     return new Response('Failed to upload files', { status: 500 });
-            // }
-
-            // const { key: muxThumbnailKey, url: muxThumbnailUrl } = uploadedThumbnailUrl.data;
-            // const { key: muxPreviewKey, url: muxPreviewUrl } = uploadedPreviewUrl.data;
-
+                if (!previewRes?.data || !thumbnailRes?.data) {
+                    throw new Error('Missing UploadThing data');
+                }
+            } catch (err) {
+                console.error('⚠️ UploadThing failed:', err);
+                // Continue anyway
+            }
+			
             await db
                 .update(videos)
                 .set({
                     muxStatus: data.status,
                     muxPlaybackId: playbackId,
                     muxAssetId: data.id,
-                    muxThumbnailUrl,
-                    // muxThumbnailKey,
-                    // muxPreviewKey,
-                    muxPreviewUrl,
                     duration,
+                    muxPreviewUrl: previewRes?.data?.ufsUrl ?? null,
+                    muxPreviewKey: previewRes?.data?.key ?? null,
+                    muxThumbnailUrl: thumbnailRes?.data?.ufsUrl ?? null,
+                    muxThumbnailKey: thumbnailRes?.data?.key ?? null,
                 })
                 .where(eq(videos.muxUploadId, data.upload_id));
             break;

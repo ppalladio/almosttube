@@ -21,29 +21,32 @@ export const VideoRouter = createTRPCRouter({
             return new TRPCError({ code: 'NOT_FOUND' });
         }
 
-        // if (existingVideo.muxThumbnailKey) {
-        //     await utapi.deleteFiles(existingVideo.muxThumbnailKey);
-        //     await db
-        //         .update(videos)
-        //         .set({ muxThumbnailKey: null, muxThumbnailUrl: null })
-        //         .where(and(eq(videos.id, input.id), eq(videos.userId, userId)));
-        // }
+        // ---->  video thumbnail clean up
+        if (existingVideo.muxThumbnailKey) {
+            await utapi.deleteFiles(existingVideo.muxThumbnailKey);
+            await db
+                .update(videos)
+                .set({ muxThumbnailKey: null, muxThumbnailUrl: null })
+                .where(and(eq(videos.id, input.id), eq(videos.userId, userId)));
+        }
+        // <---- video thumbnail clean up
         if (!existingVideo.muxPlaybackId) {
             throw new TRPCError({ code: 'BAD_REQUEST' });
         }
-        const muxThumbnailUrl = `https://image.mux.com/${existingVideo.muxPlaybackId}/thumbnail.png`;
+        // now all the thumbnails are stored in uploadthing instead of the original mux generated thumbnails
+        const tempMuxThumbnailUrl = `https://image.mux.com/${existingVideo.muxPlaybackId}/thumbnail.png`;
 
-        // const uploadedThumbnail = await utapi.uploadFilesFromUrl(tempMuxThumbnailUrl);
+        const uploadedThumbnail = await utapi.uploadFilesFromUrl(tempMuxThumbnailUrl);
 
-        // if (!uploadedThumbnail.data) {
-        //     throw new TRPCError({ code: 'BAD_REQUEST' });
-        // }
+        if (!uploadedThumbnail.data) {
+            throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR' });
+        }
 
-        // const { key: muxThumbnailKey, ufsUrl: muxThumbnailUrl } = uploadedThumbnail.data;
+        const { key: muxThumbnailKey, ufsUrl: muxThumbnailUrl } = uploadedThumbnail.data;
 
         const [updatedVideo] = await db
             .update(videos)
-            .set({ muxThumbnailUrl })
+            .set({ muxThumbnailUrl, muxThumbnailKey })
             .where(and(eq(videos.id, input.id), eq(videos.userId, userId)))
             .returning();
         return updatedVideo;
