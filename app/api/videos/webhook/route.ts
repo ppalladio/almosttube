@@ -80,7 +80,7 @@ export const POST = async (req: Request) => {
 
             const utapi = new UTApi();
             let previewRes, thumbnailRes;
-
+            // TODO ---- error handling temp ----
             try {
                 // Upload gif first, then thumbnail — keep order in sync!
                 [previewRes, thumbnailRes] = await utapi.uploadFilesFromUrl([tempMuxPreviewUrl, tempMuxThumbnailUrl]);
@@ -92,7 +92,7 @@ export const POST = async (req: Request) => {
                 console.error('⚠️ UploadThing failed:', err);
                 // Continue anyway
             }
-			
+
             await db
                 .update(videos)
                 .set({
