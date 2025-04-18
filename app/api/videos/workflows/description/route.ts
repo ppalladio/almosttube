@@ -1,6 +1,6 @@
 import { db } from '@/db';
 import { videos } from '@/db/schema';
-import { TITLE_SYSTEM_PROMPT } from '@/lib/constants';
+import { DESCRIPTION_SYSTEM_PROMPT } from '@/lib/constants';
 import { serve } from '@upstash/workflow/nextjs';
 import { and, eq } from 'drizzle-orm';
 
@@ -31,14 +31,15 @@ export const { POST } = serve(async (context) => {
         const trackUrl = `https://steam.mux.com/${video.muxPlaybackId}/text/${video.muxTrackId}.txt`;
 
         const res = await fetch(trackUrl);
-		//!
-        const text =await res.text();
+        //!
+        const text = await res.text();
         if (!text) {
-            throw new Error('Could not get transcript');
+            throw new Error('Could not get description');
         }
         return text;
     });
-    const { body } = await context.api.openai.call('generate-title', {
+
+    const { body } = await context.api.openai.call('generate-description', {
         token: process.env.OPENAI_API_KEY!,
         operation: 'chat.completions.create',
         body: {
@@ -46,24 +47,24 @@ export const { POST } = serve(async (context) => {
             messages: [
                 {
                     role: 'system',
-                    content: TITLE_SYSTEM_PROMPT,
+                    content: DESCRIPTION_SYSTEM_PROMPT,
                 },
                 {
                     role: 'user',
-                    content: transcript || 'this is a youtube clone called almost tube and this is the transcript of the video: ',
+                    content: transcript || 'this is the description of a youtube clone called almost tube and this is the transcript of the video: ',
                 },
             ],
         },
     });
-    const title = body.choices[0].message.content;
-    if (!title) {
-        throw new Error('Could not generate title');
+    const description = body.choices[0].message.content;
+    if (!description) {
+        throw new Error('Could not generate description');
     }
     await context.run('update-video', async () => {
         await db
             .update(videos)
 
-            .set({ title: title || video.title })
+            .set({ description: description || video.description })
             .where(and(eq(videos.id, videoId), eq(videos.userId, userId)));
     });
 });

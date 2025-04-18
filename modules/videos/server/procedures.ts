@@ -9,6 +9,22 @@ import { UTApi } from 'uploadthing/server';
 import { workflow } from '@/lib/qstash';
 
 export const VideoRouter = createTRPCRouter({
+    generateTitle: protectedProcedure.input(z.object({ id: z.string().uuid() })).mutation(async ({ ctx, input }) => {
+        const { id: userId } = ctx.user;
+        const { workflowRunId } = await workflow.trigger({
+            url: `${process.env.UPSTASH_WORKFLOW_URL}/api/videos/workflows/title`,
+            body: { userId, videoId: input.id },
+        });
+        return { workflowRunId };
+    }),
+    generateDescription: protectedProcedure.input(z.object({ id: z.string().uuid() })).mutation(async ({ ctx, input }) => {
+        const { id: userId } = ctx.user;
+        const { workflowRunId } = await workflow.trigger({
+            url: `${process.env.UPSTASH_WORKFLOW_URL}/api/videos/workflows/description`,
+            body: { userId, videoId: input.id },
+        });
+        return { workflowRunId };
+    }),
     generateThumbnail: protectedProcedure.input(z.object({ id: z.string().uuid() })).mutation(async ({ ctx, input }) => {
         const { id: userId } = ctx.user;
         const { workflowRunId } = await workflow.trigger({

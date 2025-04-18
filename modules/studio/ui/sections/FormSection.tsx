@@ -4,7 +4,19 @@ import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { videoUpdateSchema } from '@/db/schema';
 import { trpc } from '@/trpc/client';
-import { CopyCheckIcon, CopyIcon, Globe2Icon, ImagePlusIcon, LockIcon, MoreVerticalIcon, RotateCcwIcon, SparkleIcon, TrashIcon } from 'lucide-react';
+import {
+    CopyCheckIcon,
+    CopyIcon,
+    Globe2Icon,
+    ImagePlusIcon,
+    Loader2Icon,
+    LockIcon,
+    MoreVerticalIcon,
+    RotateCcwIcon,
+    SparkleIcon,
+    SparklesIcon,
+    TrashIcon,
+} from 'lucide-react';
 import { Suspense, useState } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import { useForm } from 'react-hook-form';
@@ -82,6 +94,8 @@ const FormSectionSuspense = ({ videoId }: FormSectionProps) => {
         resolver: zodResolver(videoUpdateSchema),
         defaultValues: video,
     });
+
+    // ai generation jobs
     const generateThumbnail = trpc.videos.generateThumbnail.useMutation({
         onSuccess: () => {
             toast.success('Background job started', {
@@ -92,6 +106,27 @@ const FormSectionSuspense = ({ videoId }: FormSectionProps) => {
             toast.error('Something went wrong');
         },
     });
+    const generateTitle = trpc.videos.generateTitle.useMutation({
+        onSuccess: () => {
+            toast.success('Background job started', {
+                description: 'This might take some time',
+            });
+        },
+        onError: () => {
+            toast.error('Something went wrong');
+        },
+    });
+    const generateDescription = trpc.videos.generateDescription.useMutation({
+        onSuccess: () => {
+            toast.success('Background job started', {
+                description: 'This might take some time',
+            });
+        },
+        onError: () => {
+            toast.error('Something went wrong');
+        },
+    });
+
     // could be not async and use update.mutate
     const onSubmit = async (data: z.infer<typeof videoUpdateSchema>) => {
         await update.mutateAsync(data);
@@ -160,7 +195,21 @@ const FormSectionSuspense = ({ videoId }: FormSectionProps) => {
                                 name="title"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Title</FormLabel>
+                                        <FormLabel>
+                                            Title
+                                            <div className="flex items-center gap-x-2">
+                                                <Button
+                                                    className="rounded-full size-6 [&_svg]:size-3"
+                                                    onClick={() => generateTitle.mutate({ id: videoId })}
+                                                    disabled={generateTitle.isPending || !video.muxTrackId}
+                                                    variant="outline"
+                                                    size="icon"
+                                                    type="button"
+                                                >
+                                                    {generateTitle.isPending ? <Loader2Icon className="animate-spin" /> : <SparklesIcon />}
+                                                </Button>
+                                            </div>
+                                        </FormLabel>
                                         <FormControl>
                                             <Input {...field} placeholder="add a title to your video" />
                                         </FormControl>
@@ -173,7 +222,21 @@ const FormSectionSuspense = ({ videoId }: FormSectionProps) => {
                                 name="description"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Description</FormLabel>
+                                        <FormLabel>
+                                            Description
+                                            <div className="flex items-center gap-x-2">
+                                                <Button
+                                                    className="rounded-full size-6 [&_svg]:size-3"
+                                                    onClick={() => generateDescription.mutate({ id: videoId })}
+                                                    disabled={generateDescription.isPending || !video.muxTrackId}
+                                                    variant="outline"
+                                                    size="icon"
+                                                    type="button"
+                                                >
+                                                    {generateDescription.isPending ? <Loader2Icon className="animate-spin" /> : <SparklesIcon />}
+                                                </Button>
+                                            </div>
+                                        </FormLabel>
                                         <FormControl>
                                             <Textarea
                                                 {...field}
@@ -269,7 +332,13 @@ const FormSectionSuspense = ({ videoId }: FormSectionProps) => {
                                             <p className="text-muted-foreground text-xs">Video Link</p>
                                             <div className="flex items-center gap-x-2">
                                                 <Link href={`/video/${video.id}`}>
-                                                    <p className="line-clamp-1 text-sm text-blue-500">localhost:xxx</p>
+                                                    {/*  TODO change localhost */}
+                                                    <p
+                                                        className="line-clamp-1 text-sm 
+													text-blue-500"
+                                                    >
+                                                        localhost:xxx
+                                                    </p>
                                                 </Link>
                                                 <Button
                                                     type="button"
@@ -284,7 +353,7 @@ const FormSectionSuspense = ({ videoId }: FormSectionProps) => {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="flex jestify-between items-center">
+                                    <div className="flex justify-between items-center">
                                         <div className="flex flex-col gap-y-1">
                                             <p className="text-muted-foreground text-xs ">Video Status</p>
                                             <p className="text-sm font-bold">{snakeCaseToTitle(video.muxStatus ?? 'Preparing')}</p>
