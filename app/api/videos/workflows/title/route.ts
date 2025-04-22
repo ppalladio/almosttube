@@ -31,8 +31,8 @@ export const { POST } = serve(async (context) => {
         const trackUrl = `https://steam.mux.com/${video.muxPlaybackId}/text/${video.muxTrackId}.txt`;
 
         const res = await fetch(trackUrl);
-		//!
-        const text =await res.text();
+        //! await?
+        const text = await res.text();
         if (!text) {
             throw new Error('Could not get transcript');
         }
@@ -50,6 +50,7 @@ export const { POST } = serve(async (context) => {
                 },
                 {
                     role: 'user',
+                    // todo remove placeholder after api is connected
                     content: transcript || 'this is a youtube clone called almost tube and this is the transcript of the video: ',
                 },
             ],

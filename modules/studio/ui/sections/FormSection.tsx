@@ -34,6 +34,7 @@ import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import ThumbnailUploadModal from '../components/ThumbnailUploadModal';
 import { thumbnailPlaceholder } from '@/lib/constants';
+import ThumbnailGenerateModal from '../components/ThumbnailGenerateModal';
 interface FormSectionProps {
     videoId: string;
 }
@@ -54,6 +55,7 @@ const FormSectionSkeleton = () => {
 const FormSectionSuspense = ({ videoId }: FormSectionProps) => {
     const router = useRouter();
     const [thumbnailModalOpen, setThumbnailModalOpen] = useState(false);
+    const [thumbnailGenerateModalOpen, setThumbnailGenerateModalOpen] = useState(false);
     const [video] = trpc.studio.getOne.useSuspenseQuery({ id: videoId });
     const [categories] = trpc.categories.getMany.useSuspenseQuery();
     const utils = trpc.useUtils();
@@ -96,16 +98,7 @@ const FormSectionSuspense = ({ videoId }: FormSectionProps) => {
     });
 
     // ai generation jobs
-    const generateThumbnail = trpc.videos.generateThumbnail.useMutation({
-        onSuccess: () => {
-            toast.success('Background job started', {
-                description: 'This might take some time',
-            });
-        },
-        onError: () => {
-            toast.error('Something went wrong');
-        },
-    });
+
     const generateTitle = trpc.videos.generateTitle.useMutation({
         onSuccess: () => {
             toast.success('Background job started', {
@@ -157,6 +150,7 @@ const FormSectionSuspense = ({ videoId }: FormSectionProps) => {
         <>
             {/* TODO THUMBNAIL IS NOT WORKING */}
             <ThumbnailUploadModal open={thumbnailModalOpen} onOpenChange={setThumbnailModalOpen} videoId={videoId} />
+            <ThumbnailGenerateModal open={thumbnailGenerateModalOpen} onOpenChange={setThumbnailGenerateModalOpen} videoId={videoId} />
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)}>
                     <div className="flex items-center justify-between   mb-6">
@@ -280,7 +274,7 @@ const FormSectionSuspense = ({ videoId }: FormSectionProps) => {
                                                             <ImagePlusIcon className="size-4 mr-1" />
                                                             Change
                                                         </DropdownMenuItem>
-                                                        <DropdownMenuItem onClick={() => generateThumbnail.mutate({ id: videoId })}>
+                                                        <DropdownMenuItem onClick={() => setThumbnailGenerateModalOpen(true)}>
                                                             <SparkleIcon className="size-4 mr-1" onClick={() => {}} />
                                                             AI-Generated
                                                         </DropdownMenuItem>
