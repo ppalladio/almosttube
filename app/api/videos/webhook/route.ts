@@ -73,7 +73,7 @@ export const POST = async (req: Request) => {
             if (!playbackId) {
                 return new Response('No playback ID found', { status: 400 });
             }
-
+            //todo --- move this to background job
             const tempMuxThumbnailUrl = `https://image.mux.com/${playbackId}/thumbnail.png`;
             const tempMuxPreviewUrl = `https://image.mux.com/${playbackId}/animated.gif`;
             const duration = data.duration ? Math.round(data.duration * 1000) : 0;
@@ -92,7 +92,7 @@ export const POST = async (req: Request) => {
                 console.error('⚠️ UploadThing failed:', err);
                 // Continue anyway
             }
-
+            // -------
             await db
                 .update(videos)
                 .set({
