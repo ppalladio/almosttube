@@ -1,3 +1,4 @@
+import { thumbnailPlaceholder } from '@/lib/constants';
 import MuxPlayer from '@mux/mux-player-react';
 interface VideoPlayerProps {
     playbackId?: string;
@@ -9,9 +10,8 @@ const VideoPlayer = ({ playbackId, thumbnailId, autoPlay, onPlay }: VideoPlayerP
     if (!playbackId) return null;
     return (
         <MuxPlayer
-            playbackId={playbackId??""}
-            // TODO change to real placeholder pics
-            poster={thumbnailId ?? '/next.svg'}
+            playbackId={playbackId ?? ''}
+            poster={thumbnailId || thumbnailPlaceholder}
             autoPlay={autoPlay}
             playerInitTime={0}
             thumbnailTime={0}

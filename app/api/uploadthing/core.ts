@@ -23,7 +23,7 @@ export const ourFileRouter = {
     })
         .input(
             z.object({
-                videoId: z.string(),
+                videoId: z.string().uuid(),
             }),
         )
         // Set permissions and file types for this FileRoute
@@ -33,27 +33,32 @@ export const ourFileRouter = {
 
             // If you throw, the user will not be able to upload
             if (!clerkUserId) throw new UploadThingError('Unauthorized');
+
             const [user] = await db.select().from(users).where(eq(users.clerkId, clerkUserId));
+
             if (!user) throw new UploadThingError('Unauthorized');
 
+            // ---->  video thumbnail clean up, only the latest thumbnail will be kept
             const [existingVideo] = await db
                 .select({ muxThumbnailKey: videos.muxThumbnailKey })
                 .from(videos)
-                .where(and(eq(videos.id, input.videoId), eq(users.clerkId, clerkUserId)));
+                // ! eq(users.clerkId, clerkUserId)
+                .where(and(eq(videos.id, input.videoId), eq(videos.userId, user.id)));
 
             if (!existingVideo) {
-                throw new UploadThingError('BAD_REQUEST');
+                throw new UploadThingError('NOT_FOUND');
             }
 
-            if (!existingVideo.muxThumbnailKey) {
+            if (existingVideo.muxThumbnailKey) {
                 const utapi = new UTApi();
 
-                await utapi.deleteFiles(existingVideo.muxThumbnailKey as string);
+                await utapi.deleteFiles(existingVideo.muxThumbnailKey);
                 await db
                     .update(videos)
                     .set({ muxThumbnailKey: null, muxThumbnailUrl: null })
                     .where(and(eq(videos.id, input.videoId), eq(videos.userId, user.id)));
             }
+            // <------ video thumbnail clean up
             // Whatever is returned here is accessible in onUploadComplete as `metadata`
             return { user, ...input };
         })
@@ -66,7 +71,6 @@ export const ourFileRouter = {
                     muxThumbnailKey: file.key,
                 })
                 .where(and(eq(videos.id, metadata.videoId), eq(videos.userId, metadata.user.id)));
-            // !!! Whatever is returned here is sent to the clientside `onClientUploadComplete` callback
             return { uploadedBy: metadata.user.id };
         }),
 } satisfies FileRouter;

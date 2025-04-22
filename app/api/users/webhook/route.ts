@@ -33,7 +33,6 @@ export async function POST(req: Request) {
     const body = JSON.stringify(payload);
 
     let evt: WebhookEvent;
-    //TODO convert delete event
     // Verify payload with headers
     try {
         evt = wh.verify(body, {
@@ -51,7 +50,6 @@ export async function POST(req: Request) {
     // Do something with payload
     // For this guide, log payload to console
     const eventType = evt.type;
-    console.log(eventType);
     if (eventType === 'user.created') {
         const data = evt.data;
         await db.insert(users).values({
