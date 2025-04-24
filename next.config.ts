@@ -11,7 +11,7 @@ const nextConfig: NextConfig = {
             // },
             {
                 protocol: 'https',
-                hostname: '**.ufs.sh',
+                hostname: 'yn3tukkbin.ufs.sh',
             },
         ],
     },

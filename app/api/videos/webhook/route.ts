@@ -38,13 +38,18 @@ export const POST = async (req: Request) => {
     const payload = await req.json();
 
     const body = JSON.stringify(payload);
-    mux.webhooks.verifySignature(
-        body,
-        {
-            'mux-signature': muxSignature,
-        },
-        SIGNING_SECRET,
-    );
+    try {
+        mux.webhooks.verifySignature(
+            body,
+            {
+                'mux-signature': muxSignature,
+            },
+            SIGNING_SECRET,
+        );
+    } catch (err) {
+        console.error('❌ Signature verification failed', err);
+        return new Response('invalid signature', { status: 401 });
+    }
 
     switch (payload.type as WebhookEvent['type']) {
         case 'video.asset.created':
@@ -84,6 +89,8 @@ export const POST = async (req: Request) => {
             try {
                 // Upload gif first, then thumbnail — keep order in sync!
                 [previewRes, thumbnailRes] = await utapi.uploadFilesFromUrl([tempMuxPreviewUrl, tempMuxThumbnailUrl]);
+                console.log("🚀 ~ POST ~ thumbnailRes:", thumbnailRes)
+                console.log("🚀 ~ POST ~ previewRes:", previewRes)
 
                 if (!previewRes?.data || !thumbnailRes?.data) {
                     throw new Error('Missing UploadThing data');
@@ -144,8 +151,12 @@ export const POST = async (req: Request) => {
             if (!assetId) {
                 return new Response('No asset ID found', { status: 400 });
             }
-
-            await db.update(videos).set({ muxTrackId: trackId, muxTrackStatus: status }).where(eq(videos.muxAssetId, assetId));
+            try {
+                await db.update(videos).set({ muxTrackId: trackId, muxTrackStatus: status }).where(eq(videos.muxAssetId, assetId));
+            } catch (err) {
+                console.error('❌ DB error updating track', err);
+                return new Response('db error', { status: 500 });
+            }
 
             break;
         }

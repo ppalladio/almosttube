@@ -129,8 +129,6 @@ export const VideoRouter = createTRPCRouter({
                         ],
                     },
                 ],
-                // ! will not work without credit card info
-                // mp4_support: 'standard',
             },
             cors_origin: '*',
         });

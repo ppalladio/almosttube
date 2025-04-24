@@ -178,6 +178,7 @@ const FormSectionSuspense = ({ videoId }: FormSectionProps) => {
             setIsCopied(false);
         }, 2000);
     };
+	
     return (
         <>
             {/* TODO THUMBNAIL IS NOT WORKING */}
@@ -383,6 +384,9 @@ const FormSectionSuspense = ({ videoId }: FormSectionProps) => {
                                         <div className="flex flex-col gap-y-1">
                                             <p className="text-muted-foreground text-xs ">Video Status</p>
                                             <p className="text-sm font-bold">{snakeCaseToTitle(video.muxStatus ?? 'Preparing')}</p>
+
+                                            <p className="text-muted-foreground text-xs ">Subtitle Status</p>
+                                            <p className="text-sm font-bold">{snakeCaseToTitle(video.muxTrackStatus ?? 'Preparing')}</p>
                                         </div>
                                     </div>
                                 </div>

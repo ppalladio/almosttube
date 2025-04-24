@@ -12,6 +12,8 @@ interface InputType {
 
 export const { POST } = serve(async (context) => {
     const input = context.requestPayload as InputType;
+    console.log('🚀 ~ const{POST}=serve ~ input:', input);
+
     const { userId, videoId, prompt } = input;
     const utapi = new UTApi();
 
