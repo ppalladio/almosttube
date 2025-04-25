@@ -178,7 +178,7 @@ const FormSectionSuspense = ({ videoId }: FormSectionProps) => {
             setIsCopied(false);
         }, 2000);
     };
-	
+
     return (
         <>
             {/* TODO THUMBNAIL IS NOT WORKING */}

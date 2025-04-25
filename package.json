@@ -6,7 +6,7 @@
         "dev:all": "concurrently \"bun run dev:webhook\" \"bun run dev\" \"bunx @upstash/qstash-cli dev \"",
         "dev:tunnel": "concurrently \"bun run dev:webhook\" \"bun run dev\" ",
         "dev": "next dev",
-        "dev:webhook": "bash scripts/start-autossh.sh",
+        "dev:webhook": "cloudflared tunnel run cfdc6b5e-e3b7-44af-baa2-2ca736fc966a",
         "build": "next build",
         "start": "next start",
         "lint": "next lint"
