@@ -28,7 +28,7 @@ export const { POST } = serve(async (context) => {
     }
 
     const transcript = await context.run('get-transcript', async () => {
-        const trackUrl = `https://steam.mux.com/${video.muxPlaybackId}/text/${video.muxTrackId}.txt`;
+        const trackUrl = `https://stream.mux.com/${video.muxPlaybackId}/text/${video.muxTrackId}.txt`;
         console.log(trackUrl);
         const res = await fetch(trackUrl);
         //! await?
@@ -56,7 +56,12 @@ export const { POST } = serve(async (context) => {
             ],
         },
     });
-    const title = body.choices[0].message.content;
+    const tempTitle = body.choices[0].message.content;
+	if(!tempTitle) {
+		throw new Error('Could not generate title');
+	}
+	const title = tempTitle.replace(/^\s*"(.*)"\s*$/, '$1');
+
     if (!title) {
         throw new Error('Could not generate title');
     }

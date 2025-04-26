@@ -12,7 +12,6 @@ interface InputType {
 
 export const { POST } = serve(async (context) => {
     const input = context.requestPayload as InputType;
-    console.log('🚀 ~ const{POST}=serve ~ input:', input);
 
     const { userId, videoId, prompt } = input;
     const utapi = new UTApi();
@@ -71,7 +70,6 @@ export const { POST } = serve(async (context) => {
     await context.run('update-video', async () => {
         await db
             .update(videos)
-
             .set({ muxThumbnailKey: uploadedThumbnail.key, muxThumbnailUrl: uploadedThumbnail.ufsUrl })
             .where(and(eq(videos.id, videoId), eq(videos.userId, userId)));
     });
