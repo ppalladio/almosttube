@@ -91,6 +91,7 @@ const FormSectionSuspense = ({ videoId }: FormSectionProps) => {
     const [video] = trpc.studio.getOne.useSuspenseQuery({ id: videoId });
     const [categories] = trpc.categories.getMany.useSuspenseQuery();
     const utils = trpc.useUtils();
+
     const update = trpc.videos.update.useMutation({
         onSuccess: () => {
             utils.studio.getMany.invalidate();
@@ -157,7 +158,7 @@ const FormSectionSuspense = ({ videoId }: FormSectionProps) => {
         await update.mutateAsync(data);
     };
     //  TODO change for deployment outside of vercel
-    const videoUrl = `${process.env.VERCEL_URL ?? 'http://localhost:3000'}/studio/videos/${videoId}`;
+    const videoUrl = `${process.env.VERCEL_URL || 'http://localhost:3000'}/videos/${videoId}`;
     const [isCopied, setIsCopied] = useState(false);
 
     const onClickSave = () => {
@@ -351,20 +352,19 @@ const FormSectionSuspense = ({ videoId }: FormSectionProps) => {
                         <div className="flex flex-col gap-y-8 lg:col-span-2">
                             <div className="flex flex-col gap-4 bg-[#f9f9f9]  rounded-xl overflow-hidden h-fit">
                                 <div className="aspect-video overflow-hidden relative">
-                                    <VideoPlayer playbackId={video.muxPlaybackId ?? ''} thumbnailId={video.muxThumbnailUrl ?? ''} />
+                                    <VideoPlayer playbackId={video.muxPlaybackId ?? ''} thumbnailUrl={video.muxThumbnailUrl ?? ''} />
                                 </div>
                                 <div className="p-4 flex flex-col gap-y-6">
                                     <div className="flex justify between items-center gap-x-2">
                                         <div className="flex flex-col gap-y-2">
                                             <p className="text-muted-foreground text-xs">Video Link</p>
                                             <div className="flex items-center gap-x-2">
-                                                <Link href={`/video/${video.id}`}>
-                                                    {/*  TODO change localhost */}
+                                                <Link href={`/videos/${video.id}`}>
                                                     <p
                                                         className="line-clamp-1 text-sm 
 													text-blue-500"
                                                     >
-                                                        localhost:xxx
+                                                        {videoUrl}
                                                     </p>
                                                 </Link>
                                                 <Button
