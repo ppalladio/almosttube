@@ -2,16 +2,16 @@ import { thumbnailPlaceholder } from '@/lib/constants';
 import MuxPlayer from '@mux/mux-player-react';
 interface VideoPlayerProps {
     playbackId?: string;
-    thumbnailId?: string;
+    thumbnailUrl?: string;
     autoPlay?: boolean;
     onPlay?: () => void;
 }
-const VideoPlayer = ({ playbackId, thumbnailId, autoPlay, onPlay }: VideoPlayerProps) => {
+const VideoPlayer = ({ playbackId, thumbnailUrl, autoPlay, onPlay }: VideoPlayerProps) => {
     if (!playbackId) return null;
     return (
         <MuxPlayer
             playbackId={playbackId ?? ''}
-            poster={thumbnailId || thumbnailPlaceholder}
+            poster={thumbnailUrl || thumbnailPlaceholder}
             autoPlay={autoPlay}
             playerInitTime={0}
             thumbnailTime={0}

@@ -28,7 +28,7 @@ export const { POST } = serve(async (context) => {
     }
 
     const transcript = await context.run('get-transcript', async () => {
-        const trackUrl = `https://steam.mux.com/${video.muxPlaybackId}/text/${video.muxTrackId}.txt`;
+        const trackUrl = `https://stream.mux.com/${video.muxPlaybackId}/text/${video.muxTrackId}.txt`;
 
         const res = await fetch(trackUrl);
         //!
