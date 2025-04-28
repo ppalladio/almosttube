@@ -1,5 +1,5 @@
 import { relations } from 'drizzle-orm';
-import { integer, pgEnum, pgTable, text, timestamp, uniqueIndex, uuid } from 'drizzle-orm/pg-core';
+import { integer, pgEnum, pgTable, primaryKey, text, timestamp, uniqueIndex, uuid } from 'drizzle-orm/pg-core';
 import { createInsertSchema, createSelectSchema, createUpdateSchema } from 'drizzle-zod';
 export const users = pgTable(
     'users',
@@ -32,6 +32,7 @@ export const categories = pgTable(
 
 export const categoryRelations = relations(categories, ({ many }) => ({
     videos: many(videos),
+	videoViews:many(videoViews),
 }));
 
 export const videoVisibility = pgEnum('video_visibility', ['private', 'public']);
@@ -64,7 +65,43 @@ export const videoSelectSchema = createSelectSchema(videos);
 export const videoUpdateSchema = createUpdateSchema(videos);
 export const videoInsertSchema = createInsertSchema(videos);
 
-export const videoRelations = relations(videos, ({ one }) => ({
+export const videoRelations = relations(videos, ({ one, many }) => ({
     user: one(users, { fields: [videos.userId], references: [users.id] }),
     category: one(categories, { fields: [videos.categoryId], references: [categories.id] }),
+    views: many(videoViews),
 }));
+
+export const videoViews = pgTable(
+    'video_views',
+    {
+        userId: uuid('user_id')
+            .references(() => users.id, { onDelete: 'cascade' })
+            .notNull(),
+        videoId: uuid('video_id')
+            .references(() => videos.id, { onDelete: 'cascade' })
+            .notNull(),
+        createdAt: timestamp('created_at').notNull().defaultNow(),
+        updatedAt: timestamp('updated_at').notNull().defaultNow(),
+    },
+    (t) => [
+        primaryKey({
+            name: 'video_views_pkey',
+            columns: [t.userId, t.videoId],
+        }),
+    ],
+);
+
+export const videoViewRelations = relations(videoViews, ({ one }) => ({
+    users: one(users, {
+        fields: [videoViews.userId],
+        references: [users.id],
+    }),
+    videos: one(videos, {
+        fields: [videoViews.userId],
+        references: [videos.id],
+    }),
+}));
+
+export const videoViewSelectSchema = createSelectSchema(videoViews);
+export const videoViewUpdateSchema = createUpdateSchema(videoViews);
+export const videoViewInsertSchema = createInsertSchema(videoViews);
