@@ -32,6 +32,7 @@ const VideoSectionSuspense = ({ videoId }: VideoSectionProps) => {
         if (!isSignedIn) return;
         createView.mutate({ videoId });
     };
+
     return (
         <>
             <div className={cn('aspect-video bg-black rounded-xl overflow-hidden relative', video.muxStatus !== 'ready' && 'rounded-b-none')}>
