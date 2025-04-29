@@ -1,5 +1,5 @@
 import { db } from '@/db';
-import { videoReactions, videoViews } from '@/db/schema';
+import { videoReactions } from '@/db/schema';
 import { createTRPCRouter, protectedProcedure } from '@/trpc/init';
 import { and, eq } from 'drizzle-orm';
 import { z } from 'zod';
@@ -12,7 +12,7 @@ export const VideoReactionRouter = createTRPCRouter({
         const [existingVideoReaction] = await db
             .select()
             .from(videoReactions)
-            .where(and(eq(videoViews.videoId, videoId), eq(videoViews.userId, userId), eq(videoReactions.type, 'like')));
+            .where(and(eq(videoReactions.videoId, videoId), eq(videoReactions.userId, userId), eq(videoReactions.type, 'like')));
         if (existingVideoReaction) {
             const [deletedVideoReaction] = await db
                 .delete(videoReactions)
@@ -43,7 +43,7 @@ export const VideoReactionRouter = createTRPCRouter({
         const [existingVideoReaction] = await db
             .select()
             .from(videoReactions)
-            .where(and(eq(videoViews.videoId, videoId), eq(videoViews.userId, userId), eq(videoReactions.type, 'dislike')));
+            .where(and(eq(videoReactions.videoId, videoId), eq(videoReactions.userId, userId), eq(videoReactions.type, 'dislike')));
         if (existingVideoReaction) {
             const [deletedVideoReaction] = await db
                 .delete(videoReactions)
@@ -59,7 +59,7 @@ export const VideoReactionRouter = createTRPCRouter({
                 videoId,
                 type: 'dislike',
             })
-			// in case of the video is already liked change to dislike
+            // in case of the video is already liked change to dislike
             .onConflictDoUpdate({
                 target: [videoReactions.userId, videoReactions.videoId],
                 set: { type: 'dislike' },
