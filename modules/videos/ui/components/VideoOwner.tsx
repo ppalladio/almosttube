@@ -19,10 +19,7 @@ const VideoOwner = ({ user, videoId }: VideoOwnerProps) => {
                     <UserAvatar imgUrl={user.imageUrl} name={user.name} size="lg" />
                     <div className="flex flex-col gap-1 min-w-0 ">
                         <UserInfo size={'lg'} name={user.name} />
-                        <span className="text-sm text-muted-foreground line-clamp-1">
-                            {/* todo get number of subscribers */}
-                            subscribers
-                        </span>
+                        <span className="text-sm text-muted-foreground line-clamp-1">{/* todo get number of subscribers */}0 subscribers</span>
                     </div>
                 </div>
             </Link>

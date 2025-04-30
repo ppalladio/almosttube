@@ -30,10 +30,12 @@ export const baseProcedure = t.procedure;
 
 export const protectedProcedure = t.procedure.use(async function isAuthed(opts) {
     const { ctx } = opts;
+	console.log(ctx)
     if (!ctx.ClerkUserId) {
         throw new TRPCError({ code: 'UNAUTHORIZED' });
     }
     const [user] = await db.select().from(users).where(eq(users.clerkId, ctx.ClerkUserId)).limit(1);
+    console.log("🚀 ~ protectedProcedure ~ user:", user)
 
     if (!user) {
         throw new TRPCError({ code: 'UNAUTHORIZED' });

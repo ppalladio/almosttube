@@ -6,6 +6,7 @@ import { users } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 
 export async function POST(req: Request) {
+	// update signing secret after create a new webhook
     const SIGNING_SECRET = process.env.CLERK_SIGNING_SECRET;
 
     if (!SIGNING_SECRET) {
