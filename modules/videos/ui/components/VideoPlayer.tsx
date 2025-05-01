@@ -6,6 +6,10 @@ interface VideoPlayerProps {
     autoPlay?: boolean;
     onPlay?: () => void;
 }
+
+export const VideoPlayerSkeleton = () => {
+    return <div className="aspect-video rounded-xl bg-black" />;
+};
 const VideoPlayer = ({ playbackId, thumbnailUrl, autoPlay, onPlay }: VideoPlayerProps) => {
     if (!playbackId) return null;
     return (
