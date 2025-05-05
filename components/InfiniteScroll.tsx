@@ -1,3 +1,4 @@
+'use client';
 import { useIntersectionObserver } from '@/hooks/use-intersection-observer';
 import { useEffect } from 'react';
 import { Button } from './ui/button';
@@ -15,7 +16,7 @@ const InfiniteScroll = ({ isManual, hasNextPage, isFetchingNextPage, fetchNextPa
             fetchNextPage();
         }
     }, [isIntersecting, isFetchingNextPage, hasNextPage, isManual, fetchNextPage]);
-	console.count('Render: infiniteScroll');
+
     return (
         <div className="flex flex-col items-center gap-4 p-4">
             <div ref={targetRef} className="h-1" />
