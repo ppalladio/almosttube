@@ -10,6 +10,7 @@ import { toast } from 'sonner';
 import { z } from 'zod';
 
 const formSchema = z.object({
+	parentId: z.string().uuid().nullish(),
     videoId: z.string().uuid(),
     value: z.string(),
 });
@@ -18,10 +19,13 @@ type FormData = z.infer<typeof formSchema>;
 
 interface CommentFormProps {
     videoId: string;
+    variant?: 'reply' | 'comment';
+    parentId?: string;
     onSuccess?: () => void;
+    onCancel?: () => void;
 }
 
-const CommentForm = ({ videoId, onSuccess }: CommentFormProps) => {
+const CommentForm = ({ videoId, onSuccess, variant = 'comment', parentId, onCancel }: CommentFormProps) => {
     const { user } = useUser();
     const utils = trpc.useUtils();
     const clerk = useClerk();
@@ -42,6 +46,7 @@ const CommentForm = ({ videoId, onSuccess }: CommentFormProps) => {
     const form = useForm<FormData>({
         resolver: zodResolver(formSchema),
         defaultValues: {
+			parentId: parentId,
             videoId,
             value: '',
         },
@@ -49,6 +54,11 @@ const CommentForm = ({ videoId, onSuccess }: CommentFormProps) => {
 
     const handleSubmit = (data: FormData) => {
         create.mutate(data);
+    };
+
+    const handleCancel = () => {
+        form.reset();
+        onCancel?.();
     };
 
     return (
@@ -65,7 +75,7 @@ const CommentForm = ({ videoId, onSuccess }: CommentFormProps) => {
                                     <FormControl>
                                         <Textarea
                                             {...field}
-                                            placeholder="Add a comment"
+                                            placeholder={variant === 'reply' ? 'Reply to this comment' : 'Add a comment'}
                                             className="resize-none bg-transparent overflow-hidden min-h-0"
                                         />
                                     </FormControl>
@@ -75,8 +85,13 @@ const CommentForm = ({ videoId, onSuccess }: CommentFormProps) => {
                         />
                     </div>
                     <div className="justify-end gap-2 mt-2 flex">
+                        {onCancel && (
+                            <Button variant="ghost" type={'button'} onClick={handleCancel}>
+                                Cancel
+                            </Button>
+                        )}
                         <Button type="submit" size={'sm'} disabled={create.isPending}>
-                            Comment
+                            {variant === 'reply' ? 'Reply' : 'Comment'}
                         </Button>
                     </div>
                 </div>
