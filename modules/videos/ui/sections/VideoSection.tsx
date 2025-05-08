@@ -3,17 +3,26 @@ import { cn } from '@/lib/utils';
 import { trpc } from '@/trpc/client';
 import { Suspense } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
-import VideoPlayer from '../components/VideoPlayer';
+import VideoPlayer, { VideoPlayerSkeleton } from '../components/VideoPlayer';
 import VideoBanner from '../components/VideoBanner';
-import VideoTopRow from '../components/VideoTopRow';
+import VideoTopRow, { VideoTopRowSkeleton } from '../components/VideoTopRow';
 import { useAuth } from '@clerk/nextjs';
 
 interface VideoSectionProps {
     videoId: string;
 }
+
+const VideoSectionSkeleton = () => {
+    return (
+        <>
+            <VideoPlayerSkeleton />
+            <VideoTopRowSkeleton />
+        </>
+    );
+};
 const VideoSection = ({ videoId }: VideoSectionProps) => {
     return (
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={<VideoSectionSkeleton />}>
             <ErrorBoundary fallback={<div>Something went wrong</div>}>
                 <VideoSectionSuspense videoId={videoId} />
             </ErrorBoundary>
@@ -32,6 +41,7 @@ const VideoSectionSuspense = ({ videoId }: VideoSectionProps) => {
         if (!isSignedIn) return;
         createView.mutate({ videoId });
     };
+
     return (
         <>
             <div className={cn('aspect-video bg-black rounded-xl overflow-hidden relative', video.muxStatus !== 'ready' && 'rounded-b-none')}>
