@@ -106,6 +106,7 @@ const CommentItem = ({ comment, variant = 'comment' }: CommentItemProps) => {
                         </div>
                     </div>
                 </div>
+                {/* todo render the dropdown conditionally */}
                 {/* {comment.user.clerkId !== userId && variant === 'comment' && ( */}
                 <DropdownMenu modal={false}>
                     <DropdownMenuTrigger asChild>

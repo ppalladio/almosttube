@@ -9,6 +9,7 @@ const page = async ({ params }: PageProps) => {
 
     void trpc.videos.getOne.prefetch({ id: videoId });
     void trpc.comments.getMany.prefetchInfinite({ videoId: videoId, limit: 5 });
+    void trpc.suggestions.getMany.prefetchInfinite({ videoId: videoId, limit: 5 });
     return (
         <HydrateClient>
             <VideoView videoId={videoId} />
