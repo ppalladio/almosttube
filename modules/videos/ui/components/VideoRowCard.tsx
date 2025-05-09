@@ -1,7 +1,7 @@
 import { cva, VariantProps } from 'class-variance-authority';
 import { VIdeoGetManyOutput } from '../../type';
 import Link from 'next/link';
-import VideoThumbnail from './VideoThumbnail';
+import VideoThumbnail, { VideoThumbnailSkeleton } from './VideoThumbnail';
 import { cn } from '@/lib/utils';
 import UserAvatar from '@/components/UserAvatar';
 import UserInfo from '@/modules/users/ui/components/UserInfo';
@@ -9,6 +9,7 @@ import { Tooltip, TooltipTrigger } from '@/components/ui/tooltip';
 import { TooltipContent } from '@radix-ui/react-tooltip';
 import VideoMenu from './VideoMenu';
 import { useMemo } from 'react';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const videoRowCardVariants = cva('group flex min-w-0', {
     variants: {
@@ -39,14 +40,41 @@ interface VideoRowCardProps extends VariantProps<typeof videoRowCardVariants> {
     onRemove?: () => void;
 }
 
-export const VideoRowCardSkeleton = () => {
-    return <div>VideoRowCardSkeleton</div>;
+export const VideoRowCardSkeleton = ({ size }: VariantProps<typeof videoRowCardVariants>) => {
+    return (
+        <div className={videoRowCardVariants({ size })}>
+            <div className={thumbnailVariants({ size })}>
+                <VideoThumbnailSkeleton />
+            </div>
+            <div className="flex-1 min-w-0">
+                <div className="flex justify-between gap-x-2">
+                    <div className="flex-1 min-w-0">
+                        <Skeleton className={cn('h-5 w-[40%]', size === 'compact' && 'h-4 w-[40%]')} />
+                        {size === 'default' && (
+                            <>
+                                <Skeleton className="h-4 w-[20%] mt-1" />
+                                <div className="flex items-center gap-2 my-3">
+                                    <Skeleton className="size-9 rounded-full" />
+                                    <Skeleton className="h-4 w-24" />
+                                </div>
+                            </>
+                        )}
+                        {size === 'compact' && (
+                            <>
+                                <Skeleton className="h-4 w-[50%] mt-1" />
+                            </>
+                        )}
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
 };
 const VideoRowCard = ({ data, onRemove, size }: VideoRowCardProps) => {
     const compactViews = useMemo(() => {
         return Intl.NumberFormat('en-Gb', { notation: 'compact' }).format(data.viewCount);
     }, [data.viewCount]);
-	const compactLikes= useMemo(() => {
+    const compactLikes = useMemo(() => {
         return Intl.NumberFormat('en-Gb', { notation: 'compact' }).format(data.likeCount);
     }, [data.likeCount]);
     return (
