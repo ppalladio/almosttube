@@ -33,7 +33,7 @@ import { snakeCaseToTitle } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import ThumbnailUploadModal from '../components/ThumbnailUploadModal';
-import { thumbnailPlaceholder } from '@/lib/constants';
+import { APP_URL, thumbnailPlaceholder } from '@/lib/constants';
 import ThumbnailGenerateModal from '../components/ThumbnailGenerateModal';
 import { Skeleton } from '@/components/ui/skeleton';
 interface FormSectionProps {
@@ -167,7 +167,7 @@ const FormSectionSuspense = ({ videoId }: FormSectionProps) => {
         await update.mutateAsync(data);
     };
     //  TODO change for deployment outside of vercel
-    const videoUrl = `${process.env.VERCEL_URL || 'http://localhost:3000'}/videos/${videoId}`;
+    const videoUrl = `${APP_URL}/videos/${videoId}`;
     const [isCopied, setIsCopied] = useState(false);
 
     const onClickSave = () => {

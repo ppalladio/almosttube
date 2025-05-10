@@ -220,6 +220,7 @@ export const VideoRouter = createTRPCRouter({
 
         const duration = asset.duration ? Math.round(asset.duration * 1000) : 0;
         const playbackId = asset.playback_ids?.[0].id;
+
         const [updatedVideo] = await db
             .update(videos)
             .set({

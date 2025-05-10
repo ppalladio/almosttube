@@ -1,19 +1,26 @@
 'use client';
 import { Button } from '@/components/ui/button';
+import { APP_URL } from '@/lib/constants';
 import { SearchIcon, XIcon } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import React, { useState } from 'react';
 
 const SearchInput = () => {
     const router = useRouter();
-    const [value, setValue] = useState('');
+    const searchParams = useSearchParams();
+    const query = searchParams.get('query') || '';
+    const categoryId = searchParams.get('categoryId') || '';
+    const [value, setValue] = useState(query);
+
     const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        const url = new URL('/search', process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000');
+        const url = new URL('/search', APP_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000');
 
         const newQuery = value.trim();
-
+        if (categoryId) {
+            url.searchParams.set('categoryId', categoryId);
+        }
         if (newQuery) {
             url.searchParams.set('query', encodeURIComponent(newQuery));
         } else {

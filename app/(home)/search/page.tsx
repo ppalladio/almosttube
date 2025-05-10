@@ -1,6 +1,7 @@
-import ResultSection from '@/modules/search/sections/ResultSection';
+import ResultSection from '@/modules/search/ui/sections/ResultSection';
 import SearchView from '@/modules/search/ui/views/SearchView';
 import { HydrateClient, trpc } from '@/trpc/server';
+export const dynamic = 'force-dynamic';
 
 interface PageProps {
     searchParams: Promise<{ query: string | undefined; categoryId?: string }>;
