@@ -6,21 +6,22 @@ import { Suspense } from 'react';
 import { FilterCarousel } from '@/components/FilterCarousel';
 import { useRouter } from 'next/navigation';
 
-interface CategoriesSectionProps {
-    categoryId?: string;
+interface CategorySectionProps {
+    categoryId: string;
 }
+
 // not necessary but a practice to prevent
-export const CategoriesSection = ({ categoryId }: CategoriesSectionProps) => {
+export const CategorySection = ({ categoryId }: CategorySectionProps) => {
     return (
         <Suspense fallback={<FilterCarousel isLoading data={[]} onSelect={() => {}} />}>
             <ErrorBoundary fallback={<div>Something went wrong</div>}>
-                <CategoriesSectionSuspense />
+                <CategorySectionSuspense categoryId={categoryId} />
             </ErrorBoundary>
         </Suspense>
     );
 };
 
-const CategoriesSectionSuspense = ({ categoryId }: CategoriesSectionProps) => {
+const CategorySectionSuspense = ({ categoryId }: CategorySectionProps) => {
     const router = useRouter();
     const [categories] = trpc.categories.getMany.useSuspenseQuery();
     const data = categories.map(({ name, id }) => ({
@@ -35,6 +36,8 @@ const CategoriesSectionSuspense = ({ categoryId }: CategoriesSectionProps) => {
         } else {
             url.searchParams.delete('categoryId');
         }
+        //@ts-expect-error errr
+
         router.push(url.toString());
     };
     // TODO REMOVE CLG

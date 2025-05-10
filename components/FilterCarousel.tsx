@@ -20,7 +20,6 @@ export const FilterCarousel = ({ value, isLoading, onSelect, data }: FilterCarou
     const [api, setApi] = useState<CarouselApi>();
     const [current, setCurrent] = useState(0);
     const [count, setCount] = useState(0);
-	console.count('Render: filterCarousel');
 
     useEffect(() => {
         if (!api) {

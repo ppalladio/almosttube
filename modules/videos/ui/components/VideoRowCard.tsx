@@ -70,7 +70,7 @@ export const VideoRowCardSkeleton = ({ size }: VariantProps<typeof videoRowCardV
         </div>
     );
 };
-const VideoRowCard = ({ data, onRemove, size }: VideoRowCardProps) => {
+const VideoRowCard = ({ data, onRemove, size = 'default' }: VideoRowCardProps) => {
     const compactViews = useMemo(() => {
         return Intl.NumberFormat('en-Gb', { notation: 'compact' }).format(data.viewCount);
     }, [data.viewCount]);
@@ -81,8 +81,8 @@ const VideoRowCard = ({ data, onRemove, size }: VideoRowCardProps) => {
         <div className={videoRowCardVariants({ size })}>
             <Link href={`/videos/${data.id}`} className={thumbnailVariants({ size })}>
                 <VideoThumbnail
-                    imgUrl={data.muxThumbnailUrl || undefined}
-                    previewUrl={data.muxPreviewUrl || undefined}
+                    imgUrl={data.muxThumbnailUrl ?? '/placeholder_img.png'}
+                    previewUrl={data.muxPreviewUrl ?? '/placeholder_img.png'}
                     title={data.title}
                     duration={data.duration}
                 />
@@ -101,7 +101,7 @@ const VideoRowCard = ({ data, onRemove, size }: VideoRowCardProps) => {
                             <>
                                 <div className="flex items-center gap-2 my-3">
                                     <UserAvatar size="sm" imgUrl={data.user.imageUrl} name={data.user.name} />
-                                    <UserInfo size="sm" name="data.user.name" />
+                                    <UserInfo size="sm" name={data.user.name} />
                                 </div>
                                 <Tooltip>
                                     <TooltipTrigger asChild>

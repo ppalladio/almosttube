@@ -1,4 +1,4 @@
-import { CategoriesSection } from "../section/CategotiesSection";
+import { CategoriesSection } from "../section/CategoriesSection";
 
 interface HomeViewProps {
     categoryId?: string;
