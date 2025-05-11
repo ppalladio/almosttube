@@ -9,7 +9,7 @@ interface VideoGridCardProps {
 export const VideoGridCardSkeleton = () => {
 	return (
 		<div className="flex flex-col gap-2 w-full ">
-			<VideoThumbnailSkeleton />
+			<VideoThumbnailSkeleton /> 
 			<VideoInfoSkeleton />
 		</div>
 	);
@@ -23,7 +23,7 @@ const VideoGridCard = ({ data, onRemove }: VideoGridCardProps) => {
                     previewUrl={data.muxPreviewUrl || undefined}
                     title={data.title}
                     duration={data.duration}
-                />
+                /> 
             </Link>
             <VideoInfo data={data} onRemove={onRemove} />
         </div>

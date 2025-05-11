@@ -14,7 +14,7 @@ interface VideoInfoProps {
 export const VideoInfoSkeleton = () => {
     return (
         <div className="flex gap-3">
-            <Skeleton className="size-10 rounded-full shrink-0" />4
+            <Skeleton className="size-10 rounded-full shrink-0" />
             <div className="min-w-0 flex-1 space-y">
                 <Skeleton className="h-5 w-[90%] " />
                 <Skeleton className="h-5 w-[70%] " />

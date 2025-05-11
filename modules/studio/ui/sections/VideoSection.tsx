@@ -102,8 +102,9 @@ const VideoSectionSuspense = () => {
                                             <div className="flex items-center gap-4">
                                                 <div className="relative aspect-video w-36 shrink-0">
                                                     <VideoThumbnail
-                                                        imgUrl={video.muxThumbnailUrl ?? ''}
-                                                        previewUrl={video.muxPreviewUrl ?? ''}
+                                                        // todo not loading initial thumbnail from mux
+                                                        imgUrl={video.muxThumbnailUrl || '/placeholder_img.png'}
+                                                        previewUrl={video.muxPreviewUrl || '/placeholder_img.png'}
                                                         duration={video.duration ?? 0}
                                                         title={video.title}
                                                     />

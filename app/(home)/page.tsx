@@ -9,7 +9,7 @@ interface PageProps {
 export default async function Page({ searchParams }: PageProps) {
     const { categoryId } = await searchParams;
     void trpc.categories.getMany.prefetch();
-
+    void trpc.videos.getMany.prefetchInfinite({ categoryId: categoryId, limit: 5 });
     return (
         <HydrateClient>
             <HomeView categoryId={categoryId} />
