@@ -1,32 +1,34 @@
 'use client';
 
 import { SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
-import { History, ListVideoIcon, ThumbsUp } from 'lucide-react';
 import { useAuth, useClerk } from '@clerk/nextjs';
+import { History, ListVideoIcon, ThumbsUp } from 'lucide-react';
 
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 const items = [
     {
         title: 'History',
-        url: '/playlists/history',
+        url: '/playlist/history',
         icon: History,
     },
     {
         title: 'Liked Videos',
-        url: '/playlists/liked',
+        url: '/playlist/liked',
         icon: ThumbsUp,
         auth: true,
     },
     {
         title: 'All Playlists',
-        url: '/playlists',
+        url: '/playlist',
         icon: ListVideoIcon,
         auth: true,
     },
 ];
 export const PersonalSection = () => {
-    const {  isSignedIn } = useAuth();
+    const pathname = usePathname();
+    const { isSignedIn } = useAuth();
     const clerk = useClerk();
     return (
         <SidebarGroup>
@@ -38,7 +40,7 @@ export const PersonalSection = () => {
                             <SidebarMenuButton
                                 tooltip={item.title}
                                 asChild
-                                isActive={false}
+                                isActive={pathname === item.url}
                                 onClick={(e) => {
                                     if (!isSignedIn && item.auth) {
                                         e.preventDefault();

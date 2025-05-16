@@ -1,11 +1,11 @@
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
-import { ThumbsDown, ThumbsUp } from 'lucide-react';
-import { VideoGetOneOutput } from '../../type';
-import { useClerk } from '@clerk/nextjs';
 import { trpc } from '@/trpc/client';
+import { useClerk } from '@clerk/nextjs';
+import { ThumbsDown, ThumbsUp } from 'lucide-react';
 import { toast } from 'sonner';
+import { VideoGetOneOutput } from '../../type';
 interface VideoReactionProps {
     videoId: string;
     likes: number;
@@ -19,7 +19,7 @@ const VideoReaction = ({ videoId, likes, dislikes, viewerReaction }: VideoReacti
     const like = trpc.videoReactions.like.useMutation({
         onSuccess: () => {
             utils.videos.getOne.invalidate({ id: videoId });
-            // todo invalidate playlist
+            utils.playlist.getLiked.invalidate();
         },
         onError: (error) => {
             toast.error('You need to sign in first');
@@ -31,12 +31,12 @@ const VideoReaction = ({ videoId, likes, dislikes, viewerReaction }: VideoReacti
     const dislike = trpc.videoReactions.dislike.useMutation({
         onSuccess: () => {
             utils.videos.getOne.invalidate({ id: videoId });
-            // todo invalidate playlist
+            utils.playlist.getLiked.invalidate();
         },
         onError: (error) => {
             toast.error('You need to sign in first');
-            console.log(error.data?.code)
-			if (error.data?.code === 'UNAUTHORIZED') {
+            console.log(error.data?.code);
+            if (error.data?.code === 'UNAUTHORIZED') {
                 clerk.openSignIn();
             }
         },
@@ -55,7 +55,12 @@ const VideoReaction = ({ videoId, likes, dislikes, viewerReaction }: VideoReacti
             </Button>
             <Separator orientation="vertical" className="h-7" />
 
-            <Button className="rounded-l-none rounded-r-full gap-2 pl-4" variant={'secondary'} onClick={() => dislike.mutate({ videoId })} disabled={dislike.isPending}>
+            <Button
+                className="rounded-l-none rounded-r-full gap-2 pl-4"
+                variant={'secondary'}
+                onClick={() => dislike.mutate({ videoId })}
+                disabled={dislike.isPending}
+            >
                 <ThumbsDown className={cn('size-5', viewerReaction === 'dislike' && 'fill-black')} />
                 {dislikes}
             </Button>
