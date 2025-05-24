@@ -1,18 +1,19 @@
 import { db } from '@/db';
 import { subscriptions, users, videoReactions, videos, videoUpdateSchema, videoViews } from '@/db/schema';
 import { mux } from '@/lib/mux';
+import { workflow } from '@/lib/qstash';
 import { baseProcedure, createTRPCRouter, protectedProcedure } from '@/trpc/init';
 import { TRPCError } from '@trpc/server';
 import { and, desc, eq, getTableColumns, inArray, isNotNull, lt, or } from 'drizzle-orm';
-import { z } from 'zod';
 import { UTApi } from 'uploadthing/server';
-import { workflow } from '@/lib/qstash';
+import { z } from 'zod';
 
 export const VideoRouter = createTRPCRouter({
     getMany: baseProcedure
         .input(
             z.object({
                 categoryId: z.string().uuid().nullish(),
+                userId: z.string().uuid().nullish(),
                 cursor: z
                     .object({
                         id: z.string().uuid(),
@@ -23,7 +24,7 @@ export const VideoRouter = createTRPCRouter({
             }),
         )
         .query(async ({ input }) => {
-            const { cursor, limit, categoryId } = input;
+            const { cursor, limit, categoryId, userId } = input;
 
             const data = await db
                 .select({
@@ -38,7 +39,7 @@ export const VideoRouter = createTRPCRouter({
                 .where(
                     and(
                         eq(videos.visibility, 'public'),
-
+                        userId ? eq(videos.userId, userId) : undefined,
                         categoryId ? eq(videos.categoryId, categoryId) : undefined,
                         cursor
                             ? or(lt(videos.updatedAt, cursor.updatedAt), and(eq(videos.updatedAt, cursor.updatedAt), lt(videos.id, cursor.id)))
