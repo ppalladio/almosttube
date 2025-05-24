@@ -1,5 +1,6 @@
-import { PlaylistView } from '@/modules/playlist/view/PlaylistView';
+import { PlaylistView } from '@/modules/playlist/ui/views/PlaylistView';
 import { HydrateClient, trpc } from '@/trpc/server';
+export const dynamic = 'force-dynamic';
 
 const page = () => {
     void trpc.playlist.getMany.prefetchInfinite({

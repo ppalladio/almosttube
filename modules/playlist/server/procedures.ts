@@ -331,4 +331,101 @@ export const PlaylistRouter = createTRPCRouter({
             const nextCursor = hasMore ? { id: lastItem.id, likedAt: lastItem.likedAt } : null;
             return { items, nextCursor };
         }),
+    getVideos: protectedProcedure
+        .input(
+            z.object({
+                playlistId: z.string().uuid(),
+                cursor: z
+                    .object({
+                        id: z.string().uuid(),
+                        updatedAt: z.date(),
+                    })
+                    .nullish(),
+                limit: z.number().min(1).max(100),
+            }),
+        )
+        .query(async ({ input, ctx }) => {
+            const { cursor, limit, playlistId } = input;
+            const { id: userId } = ctx.user;
+            const [existingPlaylist] = await db
+                .select()
+                .from(playlists)
+                .where(and(eq(playlists.id, playlistId), eq(playlists.userId, userId)));
+
+            if (!existingPlaylist) {
+                throw new TRPCError({ code: 'NOT_FOUND' });
+            }
+            const videosFromPlaylist = db.$with('playlist_videos').as(
+                db
+                    .select({
+                        videoId: playlistVideos.videoId,
+                    })
+                    .from(playlistVideos)
+                    .where(eq(playlistVideos.playlistId, playlistId)),
+            );
+
+            const data = await db
+                .with(videosFromPlaylist)
+                .select({
+                    ...getTableColumns(videos),
+                    user: users,
+                    likeCount: db.$count(videoReactions, and(eq(videoReactions.videoId, videos.id), eq(videoReactions.type, 'like'))),
+                    dislikeCount: db.$count(videoReactions, and(eq(videoReactions.videoId, videos.id), eq(videoReactions.type, 'dislike'))),
+                })
+                .from(videos)
+                .innerJoin(users, eq(videos.userId, users.id))
+                .innerJoin(videosFromPlaylist, eq(videos.id, videosFromPlaylist.videoId))
+                .where(
+                    and(
+                        eq(videos.visibility, 'public'),
+                        cursor
+                            ? or(lt(videos.updatedAt, cursor.updatedAt), and(eq(videos.updatedAt, cursor.updatedAt), lt(videos.id, cursor.id)))
+                            : undefined,
+                    ),
+                )
+                .orderBy(desc(videos.updatedAt), desc(videos.id))
+                .limit(limit + 1);
+            const hasMore: boolean = data.length > limit;
+            const items = hasMore ? data.slice(0, -1) : data;
+            const lastItem = items[items.length - 1];
+            const nextCursor = hasMore ? { id: lastItem.id, updatedAt: lastItem.updatedAt } : null;
+            return { items, nextCursor };
+        }),
+    getOne: protectedProcedure
+        .input(
+            z.object({
+                id: z.string().uuid(),
+            }),
+        )
+        .query(async ({ input, ctx }) => {
+            const { id } = input;
+            const { id: userId } = ctx.user;
+            const [playlist] = await db
+                .select()
+                .from(playlists)
+                .where(and(eq(playlists.id, id), eq(playlists.userId, userId)));
+            if (!playlist) {
+                throw new TRPCError({ code: 'NOT_FOUND' });
+            }
+            return playlist;
+        }),
+    remove: protectedProcedure
+        .input(
+            z.object({
+                id: z.string().uuid(),
+            }),
+        )
+        .mutation(async ({ input, ctx }) => {
+            const { id } = input;
+            const { id: userId } = ctx.user;
+
+            const [deletedPlaylist] = await db
+                .delete(playlists)
+                .where(and(eq(playlists.id, id), eq(playlists.userId, userId)))
+                .returning();
+            if (!deletedPlaylist) {
+                throw new TRPCError({ code: 'NOT_FOUND' });
+            }
+            return deletedPlaylist;
+        }),
 });

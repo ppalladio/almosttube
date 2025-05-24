@@ -2,8 +2,9 @@
 import { Button } from '@/components/ui/button';
 import { PlusIcon } from 'lucide-react';
 import { useState } from 'react';
-import PlaylistCreateModal from '../ui/components/PlaylistCreateModal';
-import PlaylistSection from '../ui/section/PlaylistSection';
+import PlaylistCreateModal from '../components/PlaylistCreateModal';
+import PlaylistSection from '../section/PlaylistSection';
+
 
 export const PlaylistView = () => {
     const [open, setOpen] = useState(false);

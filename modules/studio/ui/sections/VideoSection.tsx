@@ -1,16 +1,16 @@
 'use client';
 
 import InfiniteScroll from '@/components/InfiniteScroll';
+import { Skeleton } from '@/components/ui/skeleton';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { format } from 'date-fns';
 import { snakeCaseToTitle } from '@/lib/utils';
 import VideoThumbnail from '@/modules/videos/ui/components/VideoThumbnail';
 import { trpc } from '@/trpc/client';
+import { format } from 'date-fns';
+import { Globe2Icon, LockIcon } from 'lucide-react';
 import Link from 'next/link';
 import { Suspense } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
-import { Globe2Icon, LockIcon } from 'lucide-react';
-import { Skeleton } from '@/components/ui/skeleton';
 const VideoSection = () => {
     return (
         <Suspense fallback={<VideoSectionSkeleton />}>
@@ -74,13 +74,14 @@ const VideoSectionSkeleton = () => {
     );
 };
 const VideoSectionSuspense = () => {
-    const [data, query] = trpc.studio.getMany.useSuspenseInfiniteQuery({ limit: 5 }, { getNextPageParam: (lastPage) => lastPage.nextCursor });
+    const [videos, query] = trpc.studio.getMany.useSuspenseInfiniteQuery({ limit: 5 }, { getNextPageParam: (lastPage) => lastPage.nextCursor });
 
     return (
         <div>
             <div className="border-y">
                 <Table>
                     <TableHeader>
+                        {/*  todo not showing the first column */}
                         <TableRow>
                             <TableHead className="pl-6 w-[510px]">Video</TableHead>
                             <TableHead>Visibility</TableHead>
@@ -92,7 +93,7 @@ const VideoSectionSuspense = () => {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {data.pages
+                        {videos.pages
                             .flatMap((page) => page.items)
                             .map((video) => (
                                 // tr cant be inside of a tag for latest ver
@@ -129,9 +130,9 @@ const VideoSectionSuspense = () => {
                                             <div className="flex items-center">{snakeCaseToTitle(video.muxStatus as string) ?? 'Error'}</div>
                                         </TableCell>
                                         <TableCell className="text-sm truncate">{format(new Date(video.createdAt), 'd MMM yyyy')} </TableCell>
-                                        <TableCell className="text-right text-sm">Views</TableCell>
-                                        <TableCell className="text-right text-sm">Comments</TableCell>
-                                        <TableCell className="text-right text-sm pr-6">Links</TableCell>
+                                        <TableCell className="text-right text-sm">{video.viewCount}</TableCell>
+                                        <TableCell className="text-right text-sm">{video.commentCount}</TableCell>
+                                        <TableCell className="text-right text-sm pr-6">{video.likeCount}</TableCell>
                                     </TableRow>
                                 </Link>
                             ))}
