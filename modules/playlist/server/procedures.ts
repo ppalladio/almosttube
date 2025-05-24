@@ -347,6 +347,7 @@ export const PlaylistRouter = createTRPCRouter({
         .query(async ({ input, ctx }) => {
             const { cursor, limit, playlistId } = input;
             const { id: userId } = ctx.user;
+
             const [existingPlaylist] = await db
                 .select()
                 .from(playlists)
@@ -369,6 +370,7 @@ export const PlaylistRouter = createTRPCRouter({
                 .select({
                     ...getTableColumns(videos),
                     user: users,
+                    viewCount: db.$count(videoViews, eq(videoViews.videoId, videos.id)),
                     likeCount: db.$count(videoReactions, and(eq(videoReactions.videoId, videos.id), eq(videoReactions.type, 'like'))),
                     dislikeCount: db.$count(videoReactions, and(eq(videoReactions.videoId, videos.id), eq(videoReactions.type, 'dislike'))),
                 })

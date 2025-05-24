@@ -103,7 +103,6 @@ const VideoSectionSuspense = () => {
                                             <div className="flex items-center gap-4">
                                                 <div className="relative aspect-video w-36 shrink-0">
                                                     <VideoThumbnail
-                                                        // todo not loading initial thumbnail from mux
                                                         imgUrl={video.muxThumbnailUrl || '/placeholder_img.png'}
                                                         previewUrl={video.muxPreviewUrl || '/placeholder_img.png'}
                                                         duration={video.duration ?? 0}
@@ -118,13 +117,14 @@ const VideoSectionSuspense = () => {
                                                 </div>
                                             </div>
                                         </TableCell>
-                                        <TableCell className="flex items-center">
+                                        <TableCell className="flex items-center  ">
                                             {video.visibility === 'private' ? (
                                                 <LockIcon className="size-4 mr-2" />
                                             ) : (
                                                 <Globe2Icon className="size-4 mr-2" />
                                             )}
-                                            {snakeCaseToTitle(video.visibility)}
+
+                                            <div>{snakeCaseToTitle(video.visibility)}</div>
                                         </TableCell>
                                         <TableCell>
                                             <div className="flex items-center">{snakeCaseToTitle(video.muxStatus as string) ?? 'Error'}</div>
