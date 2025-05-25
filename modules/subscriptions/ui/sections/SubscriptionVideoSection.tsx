@@ -50,7 +50,7 @@ const SubscriptionVideosSectionSuspense = () => {
             <div className="flex flex-col gap-4  ">
                 {subscriptions.pages.flatMap((page) =>
                     page.items.map((item) => (
-                        <Link href={`/users/${item.user.id}`} key={item.creatorId} className="flex flex-col gap-4 ">
+                        <Link prefetch href={`/users/${item.user.id}`} key={item.creatorId} className="flex flex-col gap-4 ">
                             <SubscriptionItem
                                 name={item.user.name}
                                 imageUrl={item.user.imageUrl}

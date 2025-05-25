@@ -1,11 +1,18 @@
 'use client';
 import { Button } from '@/components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
 import { APP_URL } from '@/lib/constants';
 import { SearchIcon, XIcon } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import React, { useState } from 'react';
-
-const SearchInput = () => {
+import React, { Suspense, useState } from 'react';
+export const SearchInput = () => {
+    return (
+        <Suspense fallback={<Skeleton className="h-10 w-full" />}>
+            <SearchInputSuspense />
+        </Suspense>
+    );
+};
+const SearchInputSuspense = () => {
     const router = useRouter();
     const searchParams = useSearchParams();
     const query = searchParams.get('query') || '';
@@ -27,7 +34,7 @@ const SearchInput = () => {
             url.searchParams.delete('query');
         }
         setValue(newQuery);
-        // @ts-expect-error static typed router error
+
         router.push(url.toString());
     };
     return (

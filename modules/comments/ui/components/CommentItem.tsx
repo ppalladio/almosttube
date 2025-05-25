@@ -1,16 +1,16 @@
+import { Button } from '@/components/ui/button';
+import UserAvatar from '@/components/UserAvatar';
+import { useAuth, useClerk } from '@clerk/nextjs';
+import { formatDistanceToNow } from 'date-fns';
 import Link from 'next/link';
 import { CommentGetManyOutput } from '../../types';
-import UserAvatar from '@/components/UserAvatar';
-import { formatDistanceToNow } from 'date-fns';
-import { Button } from '@/components/ui/button';
-import { useAuth, useClerk } from '@clerk/nextjs';
 
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { ChevronDownIcon, ChevronUpIcon, MessagesSquareIcon, MoreVerticalIcon, ThumbsDownIcon, ThumbsUpIcon, Trash2Icon } from 'lucide-react';
-import { trpc } from '@/trpc/client';
-import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
+import { trpc } from '@/trpc/client';
+import { ChevronDownIcon, ChevronUpIcon, MessagesSquareIcon, MoreVerticalIcon, ThumbsDownIcon, ThumbsUpIcon, Trash2Icon } from 'lucide-react';
 import { useState } from 'react';
+import { toast } from 'sonner';
 import CommentForm from './CommentForm';
 import CommentReplies from './CommentReplies';
 interface CommentItemProps {
@@ -63,11 +63,11 @@ const CommentItem = ({ comment, variant = 'comment' }: CommentItemProps) => {
     return (
         <div>
             <div className="flex gap-4">
-                <Link href={`/users/${comment.userId}`}>
+                <Link prefetch href={`/users/${comment.userId}`}>
                     <UserAvatar size={variant === 'comment' ? 'lg' : 'sm'} imgUrl={comment.user.imageUrl} name={comment.user.name} />
                 </Link>
                 <div className="flex-1 min-w-0">
-                    <Link href={`/users/${comment.userId}`}>
+                    <Link prefetch href={`/users/${comment.userId}`}>
                         <div className="flex items-center gap-2 mb-1 5">
                             <span className="font-medium text-sm pb-0 5">{comment.user.name}</span>
                             <span className="text-xs text-muted-foreground">{formatDistanceToNow(comment.createdAt, { addSuffix: true })}</span>

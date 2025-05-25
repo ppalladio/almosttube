@@ -1,9 +1,9 @@
 'use client';
-import { Sidebar, SidebarContent, SidebarGroup, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
-import Link from 'next/link';
-import { LogOutIcon, VideoIcon } from 'lucide-react';
-import { usePathname } from 'next/navigation';
 import { Separator } from '@/components/ui/separator';
+import { Sidebar, SidebarContent, SidebarGroup, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
+import { LogOutIcon, VideoIcon } from 'lucide-react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import StudioSidebarHeader from './StudioSidebarHeader';
 
 const StudioSidebar = () => {
@@ -16,7 +16,7 @@ const StudioSidebar = () => {
                         <StudioSidebarHeader />
                         <SidebarMenuItem>
                             <SidebarMenuButton isActive={pathname === '/studio'} asChild tooltip="Exit Studio">
-                                <Link href={'/studio'}>
+                                <Link prefetch href={'/studio'}>
                                     <VideoIcon size={5} />
                                     <span className="text-sm">Content</span>
                                 </Link>
@@ -25,7 +25,7 @@ const StudioSidebar = () => {
                         <Separator />
                         <SidebarMenuItem>
                             <SidebarMenuButton asChild tooltip="Exit Studio">
-                                <Link href={'/'}>
+                                <Link prefetch href={'/'}>
                                     <LogOutIcon size={5} />
                                     <span className="text-sm">Exit Studio</span>
                                 </Link>

@@ -1,8 +1,8 @@
 import { SidebarTrigger } from '@/components/ui/sidebar';
+import AuthButton from '@/modules/auth/ui/components/AuthButton';
 import Image from 'next/image';
 import Link from 'next/link';
 import SearchInput from './SearchInput';
-import AuthButton from '@/modules/auth/ui/components/AuthButton';
 
 const HomeNavbar = () => {
     return (
@@ -12,10 +12,10 @@ const HomeNavbar = () => {
 
                 <div className="flex items-center flex-shrink-0">
                     <SidebarTrigger />
-                    <Link href="/">
+                    <Link prefetch href="/" className="hidden md:block">
                         <div className="p-4 flex items-center gap-1">
                             <Image alt="logo" src="/next.svg" height={50} width={50} />
-                            <p className="text-xl font-semibold tracking-tight">almost tube</p>
+                            <p className="text-xl font-semibold tracking-tight">AlmostTube</p>
                         </div>
                     </Link>
                 </div>
@@ -24,9 +24,9 @@ const HomeNavbar = () => {
                 <div className="flex-1 flex justify-center max-w-[700px] mx-auto">
                     <SearchInput />
                 </div>
-				<div className='flex-shrink-0 items-center flex gap-4'>
-					<AuthButton/>
-				</div>
+                <div className="flex-shrink-0 items-center flex gap-4">
+                    <AuthButton />
+                </div>
             </div>
         </nav>
     );

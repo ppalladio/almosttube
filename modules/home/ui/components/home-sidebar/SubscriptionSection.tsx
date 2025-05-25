@@ -11,7 +11,7 @@ import { usePathname } from 'next/navigation';
 export const LoadingSkeleton = () => {
     return (
         <>
-            {Array.from({ length: 4 }).map((i) => (
+            {Array.from({ length: 4 }).map((_, i) => (
                 <SidebarMenuItem key={i}>
                     <SidebarMenuButton disabled />
                     <div className="flex   items-center gap-4">
@@ -44,7 +44,7 @@ export const SubscriptionSection = () => {
                             page.items.map((item) => (
                                 <SidebarMenuItem key={`${item.creatorId}-${item.viewerId}`}>
                                     <SidebarMenuButton tooltip={item.user.name} asChild isActive={pathname === `/users/${item.user.id}`}>
-                                        <Link href={`/users/${item.user.id}`} className="flex  items-center gap-4 ">
+                                        <Link prefetch href={`/users/${item.user.id}`} className="flex  items-center gap-4 ">
                                             <UserAvatar size="xs" imgUrl={item.user.imageUrl} name={item.user.name} />
                                             <span className="text-sm">{item.user.name}</span>
                                         </Link>
@@ -55,7 +55,7 @@ export const SubscriptionSection = () => {
                     {!isLoading && (
                         <SidebarMenuItem>
                             <SidebarMenuButton asChild isActive={pathname === '/subscriptions'}>
-                                <Link href={'/subscriptions'} className="flex  items-center gap-4 ">
+                                <Link prefetch href={'/subscriptions'} className="flex  items-center gap-4 ">
                                     <ListIcon className="size-4" />
                                     <span>All Subscriptions</span>
                                 </Link>

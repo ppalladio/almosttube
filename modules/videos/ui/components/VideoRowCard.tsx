@@ -1,15 +1,15 @@
-import { cva, VariantProps } from 'class-variance-authority';
-import { VIdeoGetManyOutput } from '../../type';
-import Link from 'next/link';
-import VideoThumbnail, { VideoThumbnailSkeleton } from './VideoThumbnail';
-import { cn } from '@/lib/utils';
-import UserAvatar from '@/components/UserAvatar';
-import UserInfo from '@/modules/users/ui/components/UserInfo';
-import { Tooltip, TooltipTrigger } from '@/components/ui/tooltip';
-import { TooltipContent } from '@radix-ui/react-tooltip';
-import VideoMenu from './VideoMenu';
-import { useMemo } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Tooltip, TooltipTrigger } from '@/components/ui/tooltip';
+import UserAvatar from '@/components/UserAvatar';
+import { cn } from '@/lib/utils';
+import UserInfo from '@/modules/users/ui/components/UserInfo';
+import { TooltipContent } from '@radix-ui/react-tooltip';
+import { cva, VariantProps } from 'class-variance-authority';
+import Link from 'next/link';
+import { useMemo } from 'react';
+import { VIdeoGetManyOutput } from '../../type';
+import VideoMenu from './VideoMenu';
+import VideoThumbnail, { VideoThumbnailSkeleton } from './VideoThumbnail';
 
 const videoRowCardVariants = cva('group flex min-w-0', {
     variants: {
@@ -79,7 +79,7 @@ const VideoRowCard = ({ data, onRemove, size = 'default' }: VideoRowCardProps) =
     }, [data.likeCount]);
     return (
         <div className={videoRowCardVariants({ size })}>
-            <Link href={`/videos/${data.id}`} className={thumbnailVariants({ size })}>
+            <Link prefetch href={`/videos/${data.id}`} className={thumbnailVariants({ size })}>
                 <VideoThumbnail
                     imgUrl={data.muxThumbnailUrl ?? '/placeholder_img.png'}
                     previewUrl={data.muxPreviewUrl ?? '/placeholder_img.png'}
@@ -89,7 +89,7 @@ const VideoRowCard = ({ data, onRemove, size = 'default' }: VideoRowCardProps) =
             </Link>
             <div className="flex-1 min-w-">
                 <div className="flex justify-between gap-x-2">
-                    <Link href={`/videos/${data.id}`} className="flex-1 min-w-0">
+                    <Link prefetch href={`/videos/${data.id}`} className="flex-1 min-w-0">
                         <h3 className={cn('line-clamp-2 font-medium', size === 'compact' ? 'text-sm' : 'text-base')}>{data.title}</h3>
                         {size === 'default' && (
                             <div className="flex items-end justify-start   gap-3 text-xs text-muted-foreground mt-1">

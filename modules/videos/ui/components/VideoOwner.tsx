@@ -1,11 +1,11 @@
-import Link from 'next/link';
-import { VideoGetOneOutput } from '../../type';
-import UserAvatar from '@/components/UserAvatar';
-import { useAuth } from '@clerk/nextjs';
 import { Button } from '@/components/ui/button';
+import UserAvatar from '@/components/UserAvatar';
+import useSubscription from '@/modules/subscriptions/hooks/useSubscription';
 import SubscriptionButton from '@/modules/subscriptions/ui/components/SubscriptionButton';
 import UserInfo from '@/modules/users/ui/components/UserInfo';
-import useSubscription from '@/modules/subscriptions/hooks/useSubscription';
+import { useAuth } from '@clerk/nextjs';
+import Link from 'next/link';
+import { VideoGetOneOutput } from '../../type';
 
 interface VideoOwnerProps {
     user: VideoGetOneOutput['user'];
@@ -20,7 +20,7 @@ const VideoOwner = ({ user, videoId }: VideoOwnerProps) => {
     });
     return (
         <div className="flex items-center sm:items-start justify-between sm:justify-start gap-3 min-w-0">
-            <Link href={`/users/${user.id}`}>
+            <Link prefetch href={`/users/${user.id}`}>
                 <div className="flex items-center gap-3 min-w-0">
                     <UserAvatar imgUrl={user.imageUrl} name={user.name} size="lg" />
                     <div className="flex flex-col gap-1 min-w-0 ">
@@ -31,7 +31,9 @@ const VideoOwner = ({ user, videoId }: VideoOwnerProps) => {
             </Link>
             {userId === user.clerkId ? (
                 <Button className=" rounded-full" asChild variant={'secondary'}>
-                    <Link href={`/studio/videos/${videoId}`}>Edit Video</Link>
+                    <Link prefetch href={`/studio/videos/${videoId}`}>
+                        Edit Video
+                    </Link>
                 </Button>
             ) : (
                 <SubscriptionButton isSubscribed={user.viewerSubscribed} className="flex-none" onClick={onClick} disabled={isPending || !isLoaded} />

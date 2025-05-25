@@ -2,8 +2,17 @@
 
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Textarea } from '@/components/ui/textarea';
 import { videoUpdateSchema } from '@/db/schema';
+import { APP_URL, thumbnailPlaceholder } from '@/lib/constants';
+import { snakeCaseToTitle } from '@/lib/utils';
+import VideoPlayer from '@/modules/videos/ui/components/VideoPlayer';
 import { trpc } from '@/trpc/client';
+import { zodResolver } from '@hookform/resolvers/zod';
 import {
     CopyCheckIcon,
     CopyIcon,
@@ -17,25 +26,16 @@ import {
     SparklesIcon,
     TrashIcon,
 } from 'lucide-react';
+import Image from 'next/image';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { Suspense, useState } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import { useForm } from 'react-hook-form';
-import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from 'sonner';
-import VideoPlayer from '@/modules/videos/ui/components/VideoPlayer';
-import Link from 'next/link';
-import { snakeCaseToTitle } from '@/lib/utils';
-import { useRouter } from 'next/navigation';
-import Image from 'next/image';
-import ThumbnailUploadModal from '../components/ThumbnailUploadModal';
-import { APP_URL, thumbnailPlaceholder } from '@/lib/constants';
+import { z } from 'zod';
 import ThumbnailGenerateModal from '../components/ThumbnailGenerateModal';
-import { Skeleton } from '@/components/ui/skeleton';
+import ThumbnailUploadModal from '../components/ThumbnailUploadModal';
 interface FormSectionProps {
     videoId: string;
 }
@@ -371,7 +371,7 @@ const FormSectionSuspense = ({ videoId }: FormSectionProps) => {
                                         <div className="flex flex-col gap-y-2">
                                             <p className="text-muted-foreground text-xs">Video Link</p>
                                             <div className="flex items-center gap-x-2">
-                                                <Link href={`/videos/${video.id}`}>
+                                                <Link prefetch href={`/videos/${video.id}`}>
                                                     <p
                                                         className="line-clamp-1 text-sm 
 													text-blue-500"
@@ -417,7 +417,7 @@ const FormSectionSuspense = ({ videoId }: FormSectionProps) => {
                                             </FormControl>
                                             <SelectContent className="flex items-center justify-center">
                                                 <SelectItem value="public">
-                                                    <div >
+                                                    <div>
                                                         <Globe2Icon className="size-4 mr-2" />
                                                         Public
                                                     </div>

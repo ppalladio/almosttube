@@ -36,8 +36,7 @@ const CategorySectionSuspense = ({ categoryId }: CategorySectionProps) => {
         } else {
             url.searchParams.delete('categoryId');
         }
-        //@ts-expect-error errr
-
+    
         router.push(url.toString());
     };
     // TODO REMOVE CLG
