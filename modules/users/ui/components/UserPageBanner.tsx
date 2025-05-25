@@ -17,7 +17,7 @@ export const UserPageBannerSkeleton = () => {
 const UserPageBanner = ({ user }: UserPageBannerProps) => {
     const [modalOpen, setModalOpen] = useState(false);
     const { userId } = useAuth();
-	   return (
+    return (
         <div className="relative group">
             <BannerUploadModal userId={user.id} open={modalOpen} onOpenChange={setModalOpen} />
             <div
@@ -25,7 +25,7 @@ const UserPageBanner = ({ user }: UserPageBannerProps) => {
                     'w-full max-h-[200px] h-[15vh] md:h-[25vh] bg-gradient-to-r from-gray-100 to-gray-200 rounded-xl',
                     user.bannerUrl ? 'bg-cover bg-center' : 'bg-gray-500',
                 )}
-				//  photo is not retrieved correctly from uploadthing
+                //todo  photo is not retrieved correctly from uploadthing
                 style={{ backgroundImage: user.bannerUrl ? `url(${user.bannerUrl})` : undefined }}
             >
                 {user.clerkId === userId && (
