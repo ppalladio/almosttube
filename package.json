@@ -3,7 +3,6 @@
     "version": "0.1.0",
     "private": true,
     "scripts": {
-        "dev:all": "concurrently \"bun run dev:webhook\" \"bun run dev\"",
         "dev:tunnel": "concurrently \"bun run dev:webhook\" \"bun run dev\" ",
         "dev": "next dev",
         "dev:webhook": "cloudflared tunnel run cfdc6b5e-e3b7-44af-baa2-2ca736fc966a",

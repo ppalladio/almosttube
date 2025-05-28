@@ -34,8 +34,12 @@ const CommentForm = ({ videoId, onSuccess, variant = 'comment', parentId, onCanc
             utils.comments.getMany.invalidate({ videoId });
             form.reset();
             toast.success('Comment added');
+			onSuccess?.()
         },
+       
         onError: (error) => {
+        console.log("🚀 ~ CommentForm ~ error:", error)
+			
             if (error.data?.code === 'UNAUTHORIZED') {
                 clerk.openSignIn();
             }

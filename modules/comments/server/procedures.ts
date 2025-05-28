@@ -25,7 +25,7 @@ export const CommentRouter = createTRPCRouter({
                 throw new TRPCError({ code: 'NOT_FOUND' });
             }
 
-            if (existingComment.parentId && parentId) {
+            if (existingComment?.parentId && parentId) {
                 throw new TRPCError({ code: 'BAD_REQUEST' });
             }
             const [createdComment] = await db
